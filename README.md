@@ -1,6 +1,8 @@
 # Data explorer for IITC
 
-This is a project from the template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
+## Install
+
+Last build: [dataExplorer.user.js](https://github.com/le-jeu/iitc-data-explorer/raw/dist/dataExplorer.user.js)
 
 ## Build
 
@@ -17,3 +19,7 @@ npm run dev
 # or
 npm run build
 ```
+
+## Note
+
+This is a project from the template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.

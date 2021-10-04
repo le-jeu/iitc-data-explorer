@@ -3,6 +3,11 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'src/**'
+      - 'rollup.config.js'
+      - 'tsconfig.json'
+      - 'meta.json'
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
