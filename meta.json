@@ -5,5 +5,7 @@
   "namespace": "https://github.com/le-jeu",
   "description": "UI to explore intel available data",
   "author": "jaiperdu",
-  "category": "Info"
+  "category": "Info",
+  "updateURL": "https://github.com/le-jeu/iitc-data-explorer/raw/dist/dataExplorer.user.js",
+  "downloadURL": "https://github.com/le-jeu/iitc-data-explorer/raw/dist/dataExplorer.user.js"
 }
