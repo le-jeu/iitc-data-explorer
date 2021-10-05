@@ -35,7 +35,7 @@ const properties: {
 <div>
 	{#if link}
 	<h3>Link</h3>
-	<table>
+	<table class="raw">
 		{#each Object.entries(properties) as [key, v]}
 		<tr>
 			<td>{key}</td>

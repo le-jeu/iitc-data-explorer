@@ -1,11 +1,11 @@
 {
   "name": "IITC plugin: Data Explorer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "match": "https://intel.ingress.com/*",
   "namespace": "https://github.com/le-jeu",
   "description": "UI to explore intel available data",
   "author": "jaiperdu",
-  "category": "Info",
+  "category": "Misc",
   "updateURL": "https://github.com/le-jeu/iitc-data-explorer/raw/dist/dataExplorer.user.js",
   "downloadURL": "https://github.com/le-jeu/iitc-data-explorer/raw/dist/dataExplorer.user.js"
 }

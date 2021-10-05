@@ -105,6 +105,7 @@ let tab : "portals" | "links" | "fields" = "portals";
 <style type="text/css">
 	.content {
 		display: flex;
+		gap: .5em;
 	}
 
 	.tablist {
@@ -122,8 +123,21 @@ let tab : "portals" | "links" | "fields" = "portals";
     	content: "| ";
     }
 
+    .content > div {
+    	background-color: #0003;
+    	border-radius: 10px;
+    	padding: 0.5em;
+    }
 
-	.list :global(table td.raw) {
+    .content :global(table) {
+    	padding: 2px;
+    	border: 1px solid #69a;
+    	background-color: #0001;
+    	width: 100%;
+    }
+
+	.content :global(table td.raw),
+	.content :global(table.raw td) {
 		font-family: monospace;
 		white-space: nowrap;
 	}

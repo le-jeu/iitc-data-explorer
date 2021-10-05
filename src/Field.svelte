@@ -38,7 +38,7 @@ const properties: {
 <div>
 	{#if field}
 	<h3>Field</h3>
-	<table>
+	<table class="raw">
 		{#each Object.entries(properties) as [key, v]}
 		<tr>
 			<td>{key}</td>

@@ -45,7 +45,7 @@ const properties: {
 <div>
 	{#if portal}
 	<h3 on:click={() => window.renderPortalDetails(guid)}>Portal ↻</h3>
-	<table>
+	<table class="raw">
 		{#each Object.entries(properties) as [key, v]}
 		<tr>
 			<td>{key}</td>
