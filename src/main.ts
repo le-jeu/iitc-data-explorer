@@ -1,5 +1,4 @@
 import App from './App.svelte';
-import Dialog from './Dialog.svelte';
 
 const name = "dataExplorer";
 

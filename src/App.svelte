@@ -36,4 +36,5 @@ function openExplorer() {
 }
 </script>
 
+<!-- svelte-ignore a11y-missing-attribute -->
 <a on:click={openExplorer}>DataExplorer</a>

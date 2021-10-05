@@ -1,5 +1,5 @@
 <script lang="ts">
-import {onMount, onDestroy} from "svelte";
+import {onMount} from "svelte";
 
 export let options : DialogOptions = {};
 let div: HTMLDivElement;
