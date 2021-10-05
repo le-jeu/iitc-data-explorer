@@ -35,8 +35,8 @@ function onClick(guid: PortalID) {
 <table>
 	{#each portalList as guid (guid)}
 	<tr>
-		<td title={guid} on:click={() => onClick(guid)}>{$portals[guid].options.data.title || guid}</td>
-		<td>{timestampToString($portals[guid].options.timestamp)}</td>
+		<td class:raw={!$portals[guid].options.data.title} title={guid} on:click={() => onClick(guid)}>{$portals[guid].options.data.title || guid}</td>
+		<td class="raw">{timestampToString($portals[guid].options.timestamp)}</td>
 	</tr>
 	{/each}
 </table>
@@ -47,10 +47,6 @@ table td:first-child {
 	max-width: 25em;
 	overflow-x: hidden;
 	text-overflow: ellipsis;
-	white-space: nowrap;
-}
-
-table td {
 	white-space: nowrap;
 }
 </style>

@@ -27,14 +27,8 @@ function onClick(guid: LinkID) {
 <table>
 	{#each linkList as guid (guid)}
 	<tr>
-		<td on:click={() => onClick(guid)}>{guid}</td>
-		<td>{timestampToString($links[guid].options.timestamp)}</td>
+		<td class="raw" on:click={() => onClick(guid)}>{guid}</td>
+		<td class="raw">{timestampToString($links[guid].options.timestamp)}</td>
 	</tr>
 	{/each}
 </table>
-
-<style>
-table td:last-child {
-	white-space: nowrap;
-}
-</style>

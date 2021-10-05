@@ -9,6 +9,8 @@ import Portals from "./Portals.svelte";
 import Links from "./Links.svelte";
 import Fields from "./Fields.svelte";
 
+import { selectedPortal } from "./stores";
+
 let selectedType : "portal" | "link" | "field" = null;
 let selectedGuid = null;
 
@@ -74,7 +76,9 @@ let tab : "portals" | "links" | "fields" = "portals";
 				<li on:click={() => tab = "portals"} class:active={tab == "portals"}>Portals</li>
 				<li on:click={() => tab = "links"} class:active={tab == "links"}>Links</li>
 				<li on:click={() => tab = "fields"} class:active={tab == "fields"}>Fields</li>
+				{#if $selectedPortal}
 				<li on:click={selectCurrentPortal}>Current portal</li>
+				{/if}
 			</ul>
 			{#if tab == "portals"}
 			<Portals on:select={select}/>
@@ -117,4 +121,14 @@ let tab : "portals" | "links" | "fields" = "portals";
 	.tablist li:nth-child(n+2)::before {
     	content: "| ";
     }
+
+
+	.list :global(table td.raw) {
+		font-family: monospace;
+		white-space: nowrap;
+	}
+
+	.content :global(table tr:nth-child(2n)) {
+		background-color: #0003;
+	}
 </style>

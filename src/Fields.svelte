@@ -26,14 +26,8 @@ function onClick(guid: FieldID) {
 <table>
 	{#each fieldList as guid (guid)}
 	<tr>
-		<td on:click={() => onClick(guid)}>{guid}</td>
-		<td>{timestampToString($fields[guid].options.timestamp)}</td>
+		<td class="raw" on:click={() => onClick(guid)}>{guid}</td>
+		<td class="raw">{timestampToString($fields[guid].options.timestamp)}</td>
 	</tr>
 	{/each}
 </table>
-
-<style>
-table td:last-child {
-	white-space: nowrap;
-}
-</style>
