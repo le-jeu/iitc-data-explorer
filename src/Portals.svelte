@@ -3,12 +3,12 @@ import { createEventDispatcher } from "svelte";
 
 import { portals } from "./stores";
 
-import { portalInLink, portalInField, timestampToString } from "./utils";
+import { timestampToString } from "./utils";
 
 const dispath = createEventDispatcher();
 
-export let fieldID = null;
-export let linkID = null;
+export let linkID: LinkID = null;
+export let fieldID: FieldID = null;
 
 let portalList = [];
 $: {
@@ -26,7 +26,7 @@ $: {
 	}
 }
 
-function onClick(guid) {
+function onClick(guid: PortalID) {
 	dispath("select", { type: "portal", guid: guid });
 }
 

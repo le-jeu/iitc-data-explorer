@@ -1,20 +1,20 @@
-export function portalInField(pid, fid) {
+export function portalInField(pid: LinkID, fid: FieldID) {
 	if (!window.fields[fid]) return false;
 	return window.fields[fid].options.data.points.some((d) => d.guid == pid);
 }
 
-export function portalInLink(pid, lid) {
+export function portalInLink(pid: PortalID, lid: LinkID) {
 	if (!window.links[lid]) return false;
 	return window.links[lid].options.data.oGuid == pid || window.links[lid].options.data.dGuid == pid;
 }
 
-export function linkInField(lid, fid) {
+export function linkInField(lid: LinkID, fid: FieldID) {
 	const link = window.links[lid];
 	if (!link) return false;
 	return portalInField(link.options.data.oGuid, fid) && portalInField(link.options.data.dGuid, fid);
 }
 
-export function timestampToString(t) {
+export function timestampToString(t: number) {
 	const d = new Date(t);
 	const year = d.getUTCFullYear() + "";
 	const month = (d.getUTCMonth()+1) + "";

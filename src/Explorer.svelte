@@ -13,23 +13,23 @@ let selectedType : "portal" | "link" | "field" = null;
 let selectedGuid = null;
 
 function unselect() {
-	let link;
-	let field;
+	let link: IITCLink;
+	let field: IITCField;
 	switch (selectedType) {
 		case "portal":
 			break;
 		case "link":
 			link = window.links[selectedGuid];
-			if (link) link.setStyle({ color: window.COLORS[link.options.team] });
+			if (link) link.setStyle({ color: COLORS[link.options.team] });
 			break;
 		case "field":
 			field = window.fields[selectedGuid];
-			if (field) field.setStyle({ fillColor: window.COLORS[field.options.team] });
+			if (field) field.setStyle({ fillColor: COLORS[field.options.team] });
 			break;
 	}
 }
 
-function select(e) {
+function select(e: { detail?: { type: typeof selectedType, guid: string }}) {
 	unselect();
 	if (e.detail) {
 		selectedType = e.detail.type;

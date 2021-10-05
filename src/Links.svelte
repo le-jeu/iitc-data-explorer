@@ -7,10 +7,8 @@ import { portalInLink, linkInField, timestampToString } from "./utils";
 
 const dispatch = createEventDispatcher();
 
-export let fieldID = null;
-export let portalID = null;
-
-let selectedGuid = null;
+export let portalID: PortalID = null;
+export let fieldID: FieldID = null;
 
 let linkList = [];
 $: linkList = Object.keys($links).filter((guid) => (!portalID || portalInLink(portalID, guid)) && (!fieldID || linkInField(guid, fieldID)));
@@ -20,7 +18,7 @@ $: {
 	linkList.sort((a,b) => $links[b].options.timestamp - $links[a].options.timestamp);
 }
 
-function onClick(guid) {
+function onClick(guid: LinkID) {
 	dispatch('select', { type: 'link', guid: guid});
 }
 

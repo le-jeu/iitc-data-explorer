@@ -6,9 +6,9 @@ import Fields from "./Fields.svelte";
 
 import { timestampToString } from "./utils";
 
-export let guid = null;
+export let guid: PortalID = null;
 
-let portal = null;
+let portal: IITCPortal = null;
 $: {
 	if (guid && $portals[guid]) {
 		portal = $portals[guid];
@@ -17,7 +17,9 @@ $: {
 	}
 }
 
-const properties = {
+const properties: {
+	[prop: string]: (opt: typeof portal.options) => any
+} = {
 	guid: (opt) => opt.guid,
 	timestamp: (opt) => timestampToString(opt.timestamp),
 	team: (opt) => opt.team,

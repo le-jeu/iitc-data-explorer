@@ -6,9 +6,9 @@ import Links from "./Links.svelte";
 
 import { timestampToString } from "./utils";
 
-export let guid = null;
+export let guid: FieldID = null;
 
-let field = null;
+let field: IITCField = null;
 $: {
 	if (guid && $fields[guid]) {
 		field = $fields[guid];
@@ -17,7 +17,9 @@ $: {
 	}
 }
 
-const properties = {
+const properties: {
+	[prop: string]: (opt: any) => any
+} = {
 	guid: (opt) => opt.guid,
 	timestamp: (opt) => timestampToString(opt.timestamp),
 	team: (opt) => opt.team,
