@@ -23,5 +23,5 @@ export function timestampToString(t) {
 	const minute = d.getUTCMinutes() + "";
 	const second = d.getUTCSeconds() + "";
 	const milli = d.getUTCMilliseconds() + "";
-	return `${year}/${month.padStart(2,"0")}/${day.padStart(2,"0")}T${hour.padStart(2,"0")}:${minute.padStart(2,"0")}:${second.padStart(2,"0")}.${milli.padStart(3,"0")}`;
+	return `${year}-${month.padStart(2,"0")}-${day.padStart(2,"0")}T${hour.padStart(2,"0")}:${minute.padStart(2,"0")}:${second.padStart(2,"0")}.${milli.padStart(3,"0")}Z`;
 }
