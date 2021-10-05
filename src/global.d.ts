@@ -3,3 +3,5 @@
 /// <reference types="iitc" />
 
 const L: typeof L;
+
+const addCSSs: () => void;

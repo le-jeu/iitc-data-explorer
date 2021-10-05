@@ -23,7 +23,7 @@ function css(options = {}) {
 				return
 			}
 			return {
-				code: 'addCSS(' + JSON.stringify(code) + ');',
+				code: 'registerCSS(' + JSON.stringify(code) + ');',
 				map: { mappings: '' }
 			}
 		},
@@ -50,10 +50,19 @@ function wrapper(plugin_info) {
 // ensure plugin framework is there, even if iitc is not yet loaded
 if(typeof window.plugin !== 'function') window.plugin = function() {};
 
+var cssList = [];
+function registerCSS(css) {
+	cssList.push(css);
+}
+
 function addCSS(css) {
 	var s = document.createElement('style');
 	s.textContent = css;
 	document.head.appendChild(s);
+}
+
+function addCSSs(css) {
+	cssList.forEach(addCSS);
 }
 `;
 
