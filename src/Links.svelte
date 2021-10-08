@@ -8,6 +8,7 @@ import { portalInLink, linkInField, timestampToString } from "./utils";
 const dispatch = createEventDispatcher();
 
 export let portalID: PortalID = null;
+export let activeID: LinkID | false = false;
 export let fieldID: FieldID = null;
 
 let linkList = [];
@@ -26,9 +27,15 @@ function onClick(guid: LinkID) {
 
 <table>
 	{#each linkList as guid (guid)}
-	<tr>
+	<tr class:active={guid == activeID}>
 		<td class="raw" on:click={() => onClick(guid)}>{guid}</td>
 		<td class="raw">{timestampToString($links[guid].options.timestamp)}</td>
 	</tr>
 	{/each}
 </table>
+
+<style>
+.active {
+	color: green;
+}
+</style>

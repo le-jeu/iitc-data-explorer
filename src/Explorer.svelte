@@ -77,15 +77,15 @@ let tab : "portals" | "links" | "fields" = "portals";
 				<li on:click={() => tab = "links"} class:active={tab == "links"}>Links</li>
 				<li on:click={() => tab = "fields"} class:active={tab == "fields"}>Fields</li>
 				{#if $selectedPortal}
-				<li on:click={selectCurrentPortal}>Current portal</li>
+				<li on:click={selectCurrentPortal} class:selected={selectedType == "portal" && selectedGuid == $selectedPortal}>Current portal</li>
 				{/if}
 			</ul>
 			{#if tab == "portals"}
-			<Portals on:select={select}/>
+			<Portals on:select={select} activeID={selectedType == "portal" && selectedGuid}/>
 			{:else if tab == "links"}
-			<Links on:select={select}/>
+			<Links on:select={select} activeID={selectedType == "link" && selectedGuid}/>
 			{:else if tab == "fields"}
-			<Fields on:select={select}/>
+			<Fields on:select={select} activeID={selectedType == "field" && selectedGuid}/>
 			{/if}
 		</div>
 		{#if selectedType}
@@ -104,8 +104,9 @@ let tab : "portals" | "links" | "fields" = "portals";
 
 <style type="text/css">
 	.content {
-		display: flex;
-		gap: .5em;
+		display: grid;
+		grid-gap: .5em;
+		grid-auto-flow: column;
 	}
 
 	.tablist {
@@ -117,6 +118,11 @@ let tab : "portals" | "links" | "fields" = "portals";
 	}
 	.tablist li.active {
 		font-weight: bold;
+	}
+
+	.tablist li.selected {
+		color: red;
+		font-weight: bold
 	}
 
 	.tablist li:nth-child(n+2)::before {

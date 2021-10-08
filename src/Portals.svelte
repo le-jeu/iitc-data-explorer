@@ -1,12 +1,13 @@
 <script lang="ts">
 import { createEventDispatcher } from "svelte";
 
-import { portals } from "./stores";
+import { portals, selectedPortal } from "./stores";
 
 import { timestampToString } from "./utils";
 
 const dispath = createEventDispatcher();
 
+export let activeID: PortalID | false = false;
 export let linkID: LinkID = null;
 export let fieldID: FieldID = null;
 
@@ -34,7 +35,7 @@ function onClick(guid: PortalID) {
 
 <table>
 	{#each portalList as guid (guid)}
-	<tr>
+	<tr class:selected={guid == $selectedPortal} class:active={guid == activeID}>
 		<td class:raw={!$portals[guid].options.data.title} title={guid} on:click={() => onClick(guid)}>{$portals[guid].options.data.title || guid}</td>
 		<td class="raw">{timestampToString($portals[guid].options.timestamp)}</td>
 	</tr>
@@ -48,5 +49,13 @@ table td:first-child {
 	overflow-x: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+
+.selected {
+	color: red;
+}
+
+.active {
+	color: green;
 }
 </style>

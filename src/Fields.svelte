@@ -9,6 +9,7 @@ const dispatch = createEventDispatcher();
 
 export let portalID: PortalID = null;
 export let linkID: LinkID = null;
+export let activeID: FieldID | false = false;
 
 let fieldList = [];
 
@@ -25,9 +26,15 @@ function onClick(guid: FieldID) {
 
 <table>
 	{#each fieldList as guid (guid)}
-	<tr>
+	<tr class:active={guid == activeID}>
 		<td class="raw" on:click={() => onClick(guid)}>{guid}</td>
 		<td class="raw">{timestampToString($fields[guid].options.timestamp)}</td>
 	</tr>
 	{/each}
 </table>
+
+<style>
+.active {
+	color: green;
+}
+</style>
