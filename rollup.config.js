@@ -84,7 +84,7 @@ script.appendChild(document.createTextNode('('+ wrapper +')('+JSON.stringify(inf
 export default {
 	input: 'src/main.ts',
 	output: {
-		sourcemap: !production,
+		sourcemap: !production && 'inline',
 		format: 'iife',
 		name: 'setup',
 		file: 'dist/dataExplorer.user.js'
