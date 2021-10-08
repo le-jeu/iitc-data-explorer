@@ -33,22 +33,36 @@ function onClick(guid: PortalID) {
 
 </script>
 
-<table>
+<div class="grid">
 	{#each portalList as guid (guid)}
-	<tr class:selected={guid == $selectedPortal} class:active={guid == activeID}>
-		<td class:raw={!$portals[guid].options.data.title} title={guid} on:click={() => onClick(guid)}>{$portals[guid].options.data.title || guid}</td>
-		<td class="raw">{timestampToString($portals[guid].options.timestamp)}</td>
-	</tr>
+		<div class:selected={guid == $selectedPortal} class:active={guid == activeID} class:raw={!$portals[guid].options.data.title} title={guid} on:click={() => onClick(guid)}>{$portals[guid].options.data.title || guid}</div>
+		<div class:selected={guid == $selectedPortal} class:active={guid == activeID} class="raw date">{timestampToString($portals[guid].options.timestamp)}</div>
 	{/each}
-</table>
+</div>
 
 <style>
-table td:first-child {
-	display: inline-block;
-	max-width: 25em;
-	overflow-x: hidden;
+.grid {
+	display: grid;
+	grid-template-columns: auto max-content;
+	grid-gap: 4px;
+}
+
+.grid div:nth-child(2n+1) {
 	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.grid div {
 	white-space: nowrap;
+	max-width: 30em;
+}
+
+.grid div.raw {
+	font-family: monospace;
+}
+
+.date {
+	margin-left: auto;
 }
 
 .selected {

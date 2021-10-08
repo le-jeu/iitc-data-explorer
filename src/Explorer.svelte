@@ -105,7 +105,7 @@ let tab : "portals" | "links" | "fields" = "portals";
 <style type="text/css">
 	.content {
 		display: grid;
-		grid-gap: .5em;
+		grid-gap: 24px;
 		grid-auto-flow: column;
 	}
 
@@ -135,20 +135,17 @@ let tab : "portals" | "links" | "fields" = "portals";
     	padding: 0.5em;
     }
 
-    .content :global(table) {
-    	padding: 2px;
+    .content :global(.grid) {
+    	padding: .5em;
     	border: 1px solid #69a;
     	background-color: #0001;
-    	width: 100%;
+    	box-sizing: border-box;
     }
 
-	.content :global(table td.raw),
-	.content :global(table.raw td) {
-		font-family: monospace;
-		white-space: nowrap;
-	}
-
-	.content :global(table tr:nth-child(2n)) {
-		background-color: #0003;
+	@media (max-width: 700px) {
+		.content > div {
+    		box-sizing: border-box;
+			width: calc(100vw - 24px);
+		}
 	}
 </style>

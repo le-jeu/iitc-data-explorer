@@ -24,16 +24,30 @@ function onClick(guid: FieldID) {
 
 </script>
 
-<table>
+<div class="grid">
 	{#each fieldList as guid (guid)}
-	<tr class:active={guid == activeID}>
-		<td class="raw" on:click={() => onClick(guid)}>{guid}</td>
-		<td class="raw">{timestampToString($fields[guid].options.timestamp)}</td>
-	</tr>
+		<div class:active={guid == activeID} on:click={() => onClick(guid)}>{guid}</div>
+		<div class:active={guid == activeID} class="date">{timestampToString($fields[guid].options.timestamp)}</div>
 	{/each}
-</table>
+</div>
 
 <style>
+.grid {
+	display: grid;
+	grid-template-columns: auto max-content;
+	grid-gap: 4px;
+	font-family: monospace;
+}
+
+.grid div {
+	white-space: nowrap;
+	max-width: 30em;
+}
+
+.date {
+	margin-left: auto;
+}
+
 .active {
 	color: green;
 }
