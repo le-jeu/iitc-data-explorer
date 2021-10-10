@@ -29,9 +29,10 @@
   });
 
   function openExplorer() {
-    new Explorer({
+    const exp = new Explorer({
       target: document.body,
     });
+    exp.$on('close', () => exp.$destroy());
   }
 </script>
 

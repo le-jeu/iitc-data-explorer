@@ -66,7 +66,10 @@
   let tab: 'portals' | 'links' | 'fields' = 'portals';
 </script>
 
-<Dialog options={{ title: 'Data Explorer', resizable: true, width: 'auto' }}>
+<Dialog
+  options={{ title: 'Data Explorer', resizable: true, width: 'auto' }}
+  on:close
+>
   <div class="content">
     <div class="list">
       <ul class="tablist">
