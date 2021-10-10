@@ -17,17 +17,19 @@
     "build": "rollup -c",
     "dev": "DEVELOPMENT=1 rollup -c",
     "serve": "rollup -c -w",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-typescript": "^8.0.0",
-    "@sveltejs/svelte-virtual-list": "^3.0.1",
     "@tsconfig/svelte": "^2.0.0",
     "@types/jquery": "^3.5.6",
     "@types/jqueryui": "^1.12.16",
     "@types/leaflet": "^1.7.5",
+    "prettier-plugin-svelte": "^2.4.0",
     "rollup": "^2.3.4",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-svelte": "^7.0.0",
