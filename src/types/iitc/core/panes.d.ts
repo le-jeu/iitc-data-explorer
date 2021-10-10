@@ -1,8 +1,8 @@
-export { };
+export {};
 
 declare global {
-    var currentPane: string;
+  var currentPane: string;
 
-    function show(id: string): void;
-    function hideall(): void;
+  function show(id: string): void;
+  function hideall(): void;
 }

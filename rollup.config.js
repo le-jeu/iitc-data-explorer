@@ -6,7 +6,7 @@ import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import metablock from 'rollup-plugin-userscript-metablock';
 
-import { createFilter } from '@rollup/pluginutils'
+import { createFilter } from '@rollup/pluginutils';
 import MagicString from 'magic-string';
 
 const production = !process.env.ROLLUP_WATCH && !process.env.DEVELOPMENT;
@@ -14,32 +14,32 @@ const watch = process.env.ROLLUP_WATCH;
 const development = process.env.DEVELOPMENT;
 
 function css(options = {}) {
-	const filter = createFilter(options.include || ['**/*.css'], options.exclude);
+  const filter = createFilter(options.include || ['**/*.css'], options.exclude);
 
-	return {
-		name: 'css',
-		transform(code, id) {
-			if (!filter(id)) {
-				return
-			}
-			return {
-				code: 'registerCSS(' + JSON.stringify(code) + ');',
-				map: { mappings: '' }
-			}
-		},
-	}
+  return {
+    name: 'css',
+    transform(code, id) {
+      if (!filter(id)) {
+        return;
+      }
+      return {
+        code: 'registerCSS(' + JSON.stringify(code) + ');',
+        map: { mappings: '' },
+      };
+    },
+  };
 }
 
-function wrap ( options ) {
+function wrap(options) {
   return {
     name: 'wrap',
     renderChunk(code, renderedChunk, outputOptions) {
-      const magicString = new MagicString( code )
-        .prepend( options.intro )
-        .append( options.outro );
+      const magicString = new MagicString(code)
+        .prepend(options.intro)
+        .append(options.outro);
       return {
         code: magicString.toString(),
-        map: magicString.generateMap({ hires: true })
+        map: magicString.generateMap({ hires: true }),
       };
     },
   };
@@ -82,53 +82,53 @@ script.appendChild(document.createTextNode('('+ wrapper +')('+JSON.stringify(inf
 `;
 
 export default {
-	input: 'src/main.ts',
-	output: {
-		sourcemap: !production && 'inline',
-		format: 'iife',
-		name: 'setup',
-		file: 'dist/dataExplorer.user.js'
-	},
-	plugins: [
-		svelte({
-			preprocess: sveltePreprocess({ sourceMap: !production }),
-			compilerOptions: {
-				// enable run-time checks when not in production
-				dev: !production
-			}
-		}),
-		css(),
+  input: 'src/main.ts',
+  output: {
+    sourcemap: !production && 'inline',
+    format: 'iife',
+    name: 'setup',
+    file: 'dist/dataExplorer.user.js',
+  },
+  plugins: [
+    svelte({
+      preprocess: sveltePreprocess({ sourceMap: !production }),
+      compilerOptions: {
+        // enable run-time checks when not in production
+        dev: !production,
+      },
+    }),
+    css(),
 
-		// If you have external dependencies installed from
-		// npm, you'll most likely need these plugins. In
-		// some cases you'll need additional configuration -
-		// consult the documentation for details:
-		// https://github.com/rollup/plugins/tree/master/packages/commonjs
-		resolve({
-			browser: true,
-			dedupe: ['svelte']
-		}),
-		commonjs(),
-		typescript({
-			sourceMap: !production,
-			inlineSources: !production
-		}),
+    // If you have external dependencies installed from
+    // npm, you'll most likely need these plugins. In
+    // some cases you'll need additional configuration -
+    // consult the documentation for details:
+    // https://github.com/rollup/plugins/tree/master/packages/commonjs
+    resolve({
+      browser: true,
+      dedupe: ['svelte'],
+    }),
+    commonjs(),
+    typescript({
+      sourceMap: !production,
+      inlineSources: !production,
+    }),
 
-		// If we're building for production (npm run build
-		// instead of npm run dev), minify
-		production && terser(),
+    // If we're building for production (npm run build
+    // instead of npm run dev), minify
+    production && terser(),
 
-		wrap({
-			include: ["**/*.js"],
-			intro: iitcWrapperHeader,
-			outro: iitcWrapperFooter,
-		}),
+    wrap({
+      include: ['**/*.js'],
+      intro: iitcWrapperHeader,
+      outro: iitcWrapperFooter,
+    }),
 
-		metablock({
-			file: "./meta.json"
-		}),
-	],
-	watch: {
-		clearScreen: false
-	}
+    metablock({
+      file: './meta.json',
+    }),
+  ],
+  watch: {
+    clearScreen: false,
+  },
 };

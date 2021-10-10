@@ -1,16 +1,18 @@
 <script lang="ts">
-import {onMount} from "svelte";
+  import { onMount } from 'svelte';
 
-export let options : DialogOptions = {};
-let div: HTMLDivElement;
+  export let options: DialogOptions = {};
+  let div: HTMLDivElement;
 
-onMount(() => {
-	dialog(Object.assign(options, {
-		html: div,
-	}))
-});
+  onMount(() => {
+    dialog(
+      Object.assign(options, {
+        html: div,
+      })
+    );
+  });
 </script>
 
 <div bind:this={div}>
-	<slot/>
+  <slot />
 </div>

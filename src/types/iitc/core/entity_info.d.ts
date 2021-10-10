@@ -1,4 +1,4 @@
-import { IITC } from "./iitctypes";
+import { IITC } from './iitctypes';
 
 declare global {
   /**

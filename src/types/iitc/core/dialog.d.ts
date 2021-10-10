@@ -1,98 +1,101 @@
 import 'jqueryui';
 
 declare global {
-    /** The global ID of onscreen dialogs. */
-    var DIALOG_ID: number;
+  /** The global ID of onscreen dialogs. */
+  var DIALOG_ID: number;
 
-    /** All onscreen dialogs, keyed by their ID. */
-    var DIALOGS: {};
+  /** All onscreen dialogs, keyed by their ID. */
+  var DIALOGS: {};
 
-    /** The number of dialogs on screen. */
-    var DIALOG_COUNT: number;
+  /** The number of dialogs on screen. */
+  var DIALOG_COUNT: number;
 
-    /** The dialog that has focus. */
-    var DIALOG_FOCUS: any;
+  /** The dialog that has focus. */
+  var DIALOG_FOCUS: any;
+
+  /**
+   * Controls how quickly the slide toggle animation
+   * should play for dialog collapsing and expanding.
+   * @default 100
+   */
+  var DIALOG_SLIDE_DURATION: number;
+
+  /** Create and show dialog */
+  function dialog(data: DialogOptions): JQuery;
+
+  // see https://jqueryui.com/dialog/
+  interface DialogOptions {
+    /** If set only one dialog can be open */
+    id?: string | undefined;
+
+    /** Dialog title */
+    title?: string | undefined;
 
     /**
-     * Controls how quickly the slide toggle animation
-     * should play for dialog collapsing and expanding.
-     * @default 100
+     * Dialog contents - converted by convertTextToTableMagic
+     * \n will be line breaks \t will be table fields
      */
-    var DIALOG_SLIDE_DURATION: number;
+    text?: string | undefined;
 
-    /** Create and show dialog */
-    function dialog(data: DialogOptions): JQuery;
+    /** Dialog contents (if no text) */
+    html?: string | HTMLElement | JQuery | undefined;
 
-    // see https://jqueryui.com/dialog/
-    interface DialogOptions {
-        /** If set only one dialog can be open */
-        id?: string | undefined;
+    dialogClass?: string | undefined;
+    classes?: any;
 
-        /** Dialog title */
-        title?: string | undefined;
+    /**
+     * single dialog
+     * default: false
+     */
+    modal?: boolean | undefined;
 
-        /**
-         * Dialog contents - converted by convertTextToTableMagic
-         * \n will be line breaks \t will be table fields
-         */
-        text?: string | undefined;
+    /**
+     * moveable dialog
+     * default: true
+     */
+    draggable?: boolean | undefined;
 
-        /** Dialog contents (if no text) */
-        html?: string | HTMLElement | JQuery | undefined;
+    /**
+     * resizeable dialog (won't work in iitc out-of-the-box)
+     * default: false
+     */
+    resizable?: boolean | undefined;
 
-        dialogClass?: string | undefined;
-        classes?: any;
+    /** position, see: https://api.jqueryui.com/position/ */
+    position?: any;
 
-        /**
-         * single dialog
-         * default: false
-         */
-        modal?: boolean | undefined;
+    /** size */
+    height?: string | number | undefined;
+    width?: string | number | undefined;
+    maxHeight?: string | undefined;
+    maxWidth?: string | undefined;
+    minHeight?: string | undefined;
+    minWidth?: string | undefined;
 
-        /**
-         * moveable dialog
-         * default: true
-         */
-        draggable?: boolean | undefined;
+    autoOpen?: boolean | undefined;
+    closeOnEscape?: boolean | undefined;
+    hide?: any;
+    appendTo?: any;
 
-        /**
-         * resizeable dialog (won't work in iitc out-of-the-box)
-         * default: false
-         */
-        resizable?: boolean | undefined;
+    /** Specifies the text for the close button */
+    closeText?: string | undefined;
 
-        /** position, see: https://api.jqueryui.com/position/ */
-        position?: any;
+    closeCallback?: any;
+    collapseCallback?: any;
+    expandCallback?: any;
+    collapseExpandCallback?: any;
+    focusCallback?: any;
+    blurCallback?: any;
 
-        /** size */
-        height?: string | number | undefined;
-        width?: string | number | undefined;
-        maxHeight?: string | undefined;
-        maxWidth?: string | undefined;
-        minHeight?: string | undefined;
-        minWidth?: string | undefined;
+    buttons?:
+      | JQueryUI.ButtonOptions[]
+      | { [key: string]: () => void }
+      | undefined;
+  }
 
-        autoOpen?: boolean | undefined;
-        closeOnEscape?: boolean | undefined;
-        hide?: any;
-        appendTo?: any;
+  /** custom alert box */
+  function alert(text: string, isHTML: boolean, closeCallback: any): JQuery;
 
-        /** Specifies the text for the close button */
-        closeText?: string | undefined;
-
-        closeCallback?: any;
-        collapseCallback?: any;
-        expandCallback?: any;
-        collapseExpandCallback?: any;
-        focusCallback?: any;
-        blurCallback?: any;
-
-        buttons?: JQueryUI.ButtonOptions[] | { [key: string]: () => void } | undefined;
-    }
-
-    /** custom alert box */
-    function alert(text: string, isHTML: boolean, closeCallback: any): JQuery;
-
-    /** init */
-    function setupDialogs(): void;
+  /** init */
+  function setupDialogs(): void;
 }
