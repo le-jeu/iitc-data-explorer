@@ -40,10 +40,7 @@
 <div>
   {#if field}
     <h3>Field</h3>
-    <DataTable properties={Object.keys(properties)}>
-      <div slot="key" let:key>{key}</div>
-      <div slot="value" let:key title={properties[key]}>{properties[key]}</div>
-    </DataTable>
+    <DataTable {properties} />
 
     <h3>Portals</h3>
     <Portals on:select fieldID={guid} />

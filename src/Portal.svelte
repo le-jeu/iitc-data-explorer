@@ -58,8 +58,7 @@
 <div>
   {#if portal}
     <h3 on:click={() => window.renderPortalDetails(guid)}>Portal ↻</h3>
-    <DataTable properties={Object.keys(properties)}>
-      <div slot="key" let:key>{key}</div>
+    <DataTable {properties}>
       <div slot="value" let:key title={titles[key] || properties[key]}>
         {#if key == 'image'}
           <a href={properties[key]}>{properties[key]}</a>
@@ -68,6 +67,7 @@
         {/if}
       </div>
     </DataTable>
+
     <h3>Links</h3>
     <Links on:select portalID={guid} />
 

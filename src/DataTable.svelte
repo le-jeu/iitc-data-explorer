@@ -1,11 +1,15 @@
 <script lang="ts">
-  export let properties: string[] = [];
+  export let properties: {
+    [prop: string]: any;
+  } = {};
 </script>
 
 <div class="grid">
-  {#each properties as key}
-    <slot name="key" {key}><div /></slot>
-    <slot name="value" {key}><div /></slot>
+  {#each Object.entries(properties) as [key, value]}
+    <slot name="key" {key}><div>{key}</div></slot>
+    <slot name="value" {key}>
+      <div title={value}>{value}</div>
+    </slot>
   {/each}
 </div>
 
