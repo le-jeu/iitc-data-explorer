@@ -8,9 +8,9 @@ import Links from "./Links.svelte";
 
 import { timestampToString } from "./utils";
 
-export let guid: FieldID = null;
+export let guid: FieldGUID = null;
 
-let field: IITCField = null;
+let field: IITC.Field = null;
 $: {
 	if (guid && $fields[guid]) {
 		field = $fields[guid];

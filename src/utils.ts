@@ -1,14 +1,14 @@
-export function portalInField(pid: LinkID, fid: FieldID) {
+export function portalInField(pid: LinkGUID, fid: FieldGUID) {
 	if (!window.fields[fid]) return false;
 	return window.fields[fid].options.data.points.some((d) => d.guid == pid);
 }
 
-export function portalInLink(pid: PortalID, lid: LinkID) {
+export function portalInLink(pid: PortalGUID, lid: LinkGUID) {
 	if (!window.links[lid]) return false;
 	return window.links[lid].options.data.oGuid == pid || window.links[lid].options.data.dGuid == pid;
 }
 
-export function linkInField(lid: LinkID, fid: FieldID) {
+export function linkInField(lid: LinkGUID, fid: FieldGUID) {
 	const link = window.links[lid];
 	if (!link) return false;
 	return portalInField(link.options.data.oGuid, fid) && portalInField(link.options.data.dGuid, fid);

@@ -7,9 +7,9 @@ import { timestampToString } from "./utils";
 
 const dispath = createEventDispatcher();
 
-export let activeID: PortalID | false = false;
-export let linkID: LinkID = null;
-export let fieldID: FieldID = null;
+export let activeID: PortalGUID | false = false;
+export let linkID: LinkGUID = null;
+export let fieldID: FieldGUID = null;
 
 let portalList = [];
 $: {
@@ -27,7 +27,7 @@ $: {
 	}
 }
 
-function onClick(guid: PortalID) {
+function onClick(guid: PortalGUID) {
 	dispath("select", { type: "portal", guid: guid });
 }
 

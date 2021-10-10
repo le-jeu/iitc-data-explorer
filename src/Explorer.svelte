@@ -15,17 +15,15 @@ let selectedType : "portal" | "link" | "field" = null;
 let selectedGuid = null;
 
 function unselect() {
-	let link: IITCLink;
-	let field: IITCField;
 	switch (selectedType) {
 		case "portal":
 			break;
 		case "link":
-			link = window.links[selectedGuid];
+			const link = window.links[selectedGuid];
 			if (link) link.setStyle({ color: COLORS[link.options.team] });
 			break;
 		case "field":
-			field = window.fields[selectedGuid];
+			const field = window.fields[selectedGuid];
 			if (field) field.setStyle({ fillColor: COLORS[field.options.team] });
 			break;
 	}

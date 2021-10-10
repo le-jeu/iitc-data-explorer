@@ -8,9 +8,9 @@ import Fields from "./Fields.svelte";
 
 import { timestampToString } from "./utils";
 
-export let guid: PortalID = null;
+export let guid: PortalGUID = null;
 
-let portal: IITCPortal = null;
+let portal: IITC.Portal = null;
 $: {
 	if (guid && $portals[guid]) {
 		portal = $portals[guid];

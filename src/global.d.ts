@@ -1,15 +1,19 @@
 /// <reference types="svelte" />
-/// <reference types="leaflet" />
 /// <reference types="iitc" />
 
-const L: typeof L;
+import type * as iitc from "./types/iitc";
 
-const addCSSs: () => void;
+declare global {
+	const addCSSs: () => void;
 
-type PortalID = string;
-type LinkID = string;
-type FieldID = string;
+	type PortalGUID = iitc.PortalGUID;
+	type LinkGUID = iitc.LinkGUID;
+	type FieldGUID = iitc.FieldGUID;
 
-type IITCPortal = IITC.Portal;
-type IITCLink = IITC.Link;
-type IITCField = IITC.Field;
+	// expose globally subset of IITC namespace
+	namespace IITC {
+		type Portal = iitc.IITC.Portal;
+		type Link = iitc.IITC.Link;
+		type Field = iitc.IITC.Field;
+	}
+}
