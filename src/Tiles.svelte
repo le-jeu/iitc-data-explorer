@@ -1,6 +1,5 @@
 <script lang="ts">
   import { createEventDispatcher, onDestroy } from 'svelte';
-  import L from './leaflet';
 
   import { tiles } from './stores';
 
@@ -25,7 +24,7 @@
     tileList.sort((a, b) => $tiles[b].time - $tiles[a].time);
   }
 
-  let tilesPolygon = L.layerGroup().addTo(window.map);
+  let tilesPolygon = window.L.layerGroup().addTo(window.map);
   $: {
     tilesPolygon.clearLayers();
     if (portalID || linkID || fieldID) {
@@ -45,7 +44,7 @@
         const latSouth = tileToLat(tileParam.y + 1, params);
         const lngWest = tileToLng(tileParam.x, params);
         const lngEast = tileToLng(tileParam.x + 1, params);
-        L.rectangle(
+        window.L.rectangle(
           [
             [latSouth, lngWest],
             [latNorth, lngEast],

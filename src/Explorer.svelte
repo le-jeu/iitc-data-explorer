@@ -1,8 +1,6 @@
 <script lang="ts">
   import { onDestroy } from 'svelte';
 
-  import L from './leaflet';
-
   import Dialog from './Dialog.svelte';
 
   import Portal from './Portal.svelte';
@@ -101,7 +99,7 @@
           const lngEast = tileToLng(tileParam.x + 1, params);
           const tile = $tiles[selectedGuid];
           if (tile) selectEntities(tile.entities);
-          tilePolygon = L.rectangle(
+          tilePolygon = window.L.rectangle(
             [
               [latSouth, lngWest],
               [latNorth, lngEast],
