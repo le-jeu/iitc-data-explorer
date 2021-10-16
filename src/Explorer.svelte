@@ -230,13 +230,6 @@
     padding: 0.5em;
   }
 
-  .content :global(.grid) {
-    padding: 0.5em;
-    border: 1px solid #69a;
-    background-color: #0001;
-    box-sizing: border-box;
-  }
-
   @media (max-width: 700px) {
     .content > div {
       box-sizing: border-box;

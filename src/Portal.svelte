@@ -60,14 +60,14 @@
 <div>
   {#if portal}
     <h3 on:click={() => window.renderPortalDetails(guid)}>Portal ↻</h3>
-    <DataTable {properties}>
-      <div slot="value" let:key title={titles[key] || properties[key]}>
+    <DataTable {properties} {titles}>
+      <svelte:fragment slot="value" let:key>
         {#if key == 'image'}
           <a href={properties[key]}>{properties[key]}</a>
         {:else}
           {properties[key]}
         {/if}
-      </div>
+      </svelte:fragment>
     </DataTable>
 
     <h3>Links</h3>
