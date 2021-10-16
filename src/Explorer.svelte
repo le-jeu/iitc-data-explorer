@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onDestroy } from 'svelte';
+
   import L from './leaflet';
 
   import Dialog from './Dialog.svelte';
@@ -120,6 +122,11 @@
   }
 
   let tab: 'portals' | 'links' | 'fields' | 'tiles' = 'portals';
+
+  onDestroy(() => {
+    selectEntities([]);
+    if (tilePolygon) tilePolygon.remove();
+  })
 </script>
 
 <Dialog

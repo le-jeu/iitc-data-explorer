@@ -7,11 +7,12 @@
   let dispatch = createEventDispatcher();
 
   onMount(() => {
+    const closeCallback = options.closeCallback;
     dialog(
       Object.assign(options, {
         html: div,
         closeCallback: () => {
-          if (options.closeCallback) options.closeCallback();
+          if (closeCallback) closeCallback();
           dispatch('close');
         },
       })
