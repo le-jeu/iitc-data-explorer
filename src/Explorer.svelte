@@ -49,7 +49,10 @@
           break;
         case 'e':
           const link = window.links[guid];
-          if (link) link.setStyle({ color: 'red' });
+          if (link) {
+            link.setStyle({ color: 'red' });
+            link.bringToFront();
+          }
           break;
         case 'r':
           const field = window.fields[guid];
@@ -126,7 +129,7 @@
   onDestroy(() => {
     selectEntities([]);
     if (tilePolygon) tilePolygon.remove();
-  })
+  });
 </script>
 
 <Dialog
