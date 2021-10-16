@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onDestroy } from 'svelte';
+  import L from './leaflet';
 
   import { tiles } from './stores';
 
-  import { timestampToString } from './utils';
+  import { tileIDToTileParam, timestampToString } from './utils';
 
   const dispatch = createEventDispatcher();
 
@@ -24,9 +25,44 @@
     tileList.sort((a, b) => $tiles[b].time - $tiles[a].time);
   }
 
+  let tilesPolygon = L.layerGroup().addTo(window.map);
+  $: {
+    tilesPolygon.clearLayers();
+    if (portalID || linkID || fieldID) {
+      const maxTilesPerEdge =
+        window.TILE_PARAMS.TILES_PER_EDGE[
+          window.TILE_PARAMS.TILES_PER_EDGE.length - 1
+        ];
+      for (const tid of tileList) {
+        const tileParam = tileIDToTileParam(tid);
+        const params = {
+          tilesPerEdge:
+            window.TILE_PARAMS.TILES_PER_EDGE[tileParam.zoom] ||
+            maxTilesPerEdge,
+        } as MapZoomTileParameters;
+
+        const latNorth = tileToLat(tileParam.y, params);
+        const latSouth = tileToLat(tileParam.y + 1, params);
+        const lngWest = tileToLng(tileParam.x, params);
+        const lngEast = tileToLng(tileParam.x + 1, params);
+        L.rectangle(
+          [
+            [latSouth, lngWest],
+            [latNorth, lngEast],
+          ],
+          { color: 'purple', interactive: false }
+        ).addTo(tilesPolygon);
+      }
+    }
+  }
+
   function onClick(guid: FieldGUID) {
     dispatch('select', { type: 'tile', guid: guid });
   }
+
+  onDestroy(() => {
+    tilesPolygon.remove();
+  });
 </script>
 
 <div class="grid">
