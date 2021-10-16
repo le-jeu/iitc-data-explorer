@@ -1,4 +1,4 @@
-import { PortalGUID, LinkGUID, FieldGUID } from "./iitctypes";
+import { PortalGUID, LinkGUID, FieldGUID } from './iitctypes';
 
 export namespace Intel {
   // PLAYER

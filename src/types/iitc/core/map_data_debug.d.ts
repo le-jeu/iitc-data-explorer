@@ -21,7 +21,7 @@ export class RenderDebugTiles {
   private timer?: number | undefined;
 
   reset(): void;
-  create(id: string, bounds: L.LatLngBounds): void;
+  create(id: string, bounds: L.LatLngBoundsExpression): void;
   setColour(id: string, borercol: string, fillcol: string): void;
   setState(id: string, state: DebugTileState): void;
 

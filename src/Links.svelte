@@ -1,9 +1,9 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  import { links } from './stores';
+  import { links, tiles } from './stores';
 
-  import { getTile, portalInLink, linkInField, timestampToString } from './utils';
+  import { portalInLink, linkInField, timestampToString } from './utils';
 
   const dispatch = createEventDispatcher();
 
@@ -15,9 +15,9 @@
   let linkList = [];
   $: {
     if (tileID) {
-      const tile = getTile(tileID);
+      const tile = $tiles[tileID];
       if (!tile) linkList = [];
-      else linkList = tile.gameEntities.filter((e) => e[2][0] == 'e').map((p) => p[0]);
+      else linkList = tile.entities.filter((e) => e[0] == 'e').map((e) => e[1]);
       linkList = linkList.filter((a) => $links[a]);
     } else {
       linkList = Object.keys($links).filter(

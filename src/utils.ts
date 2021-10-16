@@ -38,25 +38,14 @@ export function timestampToString(t: number) {
   )}.${milli.padStart(3, '0')}Z`;
 }
 
-export function getTileList(): TileID[] {
-  const cache = (window.mapDataRequest.cache as DataCache)._cache;
-  return Object.keys(cache);
-}
-
-export function getTile(tid: TileID) {
-  const cache = (window.mapDataRequest.cache as DataCache)._cache;
-  if (tid in cache) return JSON.parse(cache[tid].dataStr) as RequestTile;
-  return null;
-}
-
-export function getTileTime(tid: TileID) {
-  const cache = (window.mapDataRequest.cache as DataCache)._cache;
-  if (tid in cache) return cache[tid].time;
-  return 0;
-}
-
-export function entityInTile(thingid: PortalGUID | LinkGUID | FieldGUID, tid: TileID) {
-  const tile = getTile(tid);
-  if (!tile) return;
-  return tile.gameEntities.some((e) => e[0] == thingid);
+export function tileIDToTileParam(tid: TileID) {
+  const [zoom, x, y, minlvl, maxlvl, maxhealth] = tid.split('_');
+  return {
+    zoom: +zoom,
+    x: +x,
+    y: +y,
+    minlvl: +minlvl,
+    maxlvl: +maxlvl,
+    maxhealth: +maxhealth,
+  };
 }

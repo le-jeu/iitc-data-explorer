@@ -19,19 +19,29 @@ declare global {
     type Field = iitc.IITC.Field;
   }
 
+  var MapDataRequest: typeof iitc.MapDataRequest;
+
   interface DataCache extends iitc.DataCache {
     _cache: {
       [key: string]: {
-        time: number, expire: number, dataStr: string
-      }
+        time: number;
+        expire: number;
+        dataStr: string;
+      };
     };
   }
 
-  type IntelGameEntity = iitc.Intel.PortalDetails | iitc.Intel.LinkDetails | iitc.Intel.FieldDetails;
+  type IntelGameEntity =
+    | iitc.Intel.PortalDetails
+    | iitc.Intel.LinkDetails
+    | iitc.Intel.FieldDetails;
 
   interface RequestTile {
     gameEntities: IntelGameEntity[];
   }
+
+  interface TileInfo {
+    time: number;
+    entities: (['p', PortalGUID] | ['e', LinkGUID] | ['r', FieldGUID])[];
+  }
 }
-
-

@@ -1,7 +1,7 @@
 <script lang="ts">
   import Explorer from './Explorer.svelte';
 
-  import { portals, links, fields, selectedPortal } from './stores';
+  import { portals, links, fields, tiles, selectedPortal } from './stores';
 
   $portals = window.portals;
   $links = window.links;
@@ -27,6 +27,35 @@
   window.addHook('portalSelected', (d) => {
     $selectedPortal = d.selectedPortalGuid;
   });
+
+  let lastRefresh = 0;
+  window.addHook('mapDataRefreshStart', () => {
+    lastRefresh = Date.now();
+  });
+  window.addHook('mapDataRefreshEnd', () => {
+    const ts = $tiles;
+    const toDelete = [];
+    // add some delay
+    const oldAge = lastRefresh - 1000 * 60 * 5;
+    for (const id in ts) {
+      if (ts[id].time < oldAge) toDelete.push(id);
+    }
+    for (const id of toDelete) delete ts[id];
+    $tiles = ts;
+  });
+
+  const oldPushRenderQueue = window.MapDataRequest.prototype.pushRenderQueue;
+  window.MapDataRequest.prototype.pushRenderQueue = function (
+    id,
+    data: RequestTile,
+    status
+  ) {
+    oldPushRenderQueue.call(this, id, data, status);
+    $tiles[id] = {
+      time: Date.now(),
+      entities: data.gameEntities.map((e) => [e[2][0], e[0]]),
+    };
+  };
 
   function openExplorer() {
     const exp = new Explorer({

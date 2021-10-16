@@ -1,4 +1,6 @@
 <script lang="ts">
+  import L from './leaflet';
+
   import Dialog from './Dialog.svelte';
 
   import Portal from './Portal.svelte';
@@ -11,30 +13,59 @@
   import Fields from './Fields.svelte';
   import Tiles from './Tiles.svelte';
 
-  import { selectedPortal } from './stores';
+  import { tiles, selectedPortal } from './stores';
+
+  import { tileIDToTileParam } from './utils';
 
   let selectedType: 'portal' | 'link' | 'field' | 'tile' = null;
   let selectedGuid = null;
 
-  function unselect() {
-    switch (selectedType) {
-      case 'portal':
-        break;
-      case 'link':
-        const link = window.links[selectedGuid];
-        if (link) link.setStyle({ color: COLORS[link.options.team] });
-        break;
-      case 'field':
-        const field = window.fields[selectedGuid];
-        if (field) field.setStyle({ fillColor: COLORS[field.options.team] });
-        break;
-      default:
-        break;
+  let tilePolygon = null;
+  let selectedEntities = [];
+  function selectEntities(entities: TileInfo['entities']) {
+    for (const e of selectedEntities) {
+      const [type, guid] = e;
+      switch (type) {
+        case 'p':
+          break;
+        case 'e':
+          const link = window.links[guid];
+          if (link) link.setStyle({ color: COLORS[link.options.team] });
+          break;
+        case 'r':
+          const field = window.fields[guid];
+          if (field) field.setStyle({ fillColor: COLORS[field.options.team] });
+          break;
+      }
+    }
+
+    selectedEntities = entities;
+    for (const e of selectedEntities) {
+      const [type, guid] = e;
+      switch (type) {
+        case 'p':
+          break;
+        case 'e':
+          const link = window.links[guid];
+          if (link) link.setStyle({ color: 'red' });
+          break;
+        case 'r':
+          const field = window.fields[guid];
+          if (field) {
+            field.setStyle({ fillColor: 'red' });
+            field.bringToFront();
+          }
+          break;
+      }
     }
   }
 
   function select(e: { detail?: { type: typeof selectedType; guid: string } }) {
-    unselect();
+    if (tilePolygon) {
+      tilePolygon.remove();
+      tilePolygon = null;
+    }
+    selectEntities([]);
     if (e.detail) {
       selectedType = e.detail.type;
       selectedGuid = e.detail.guid;
@@ -43,16 +74,35 @@
           window.selectPortal(selectedGuid);
           break;
         case 'link':
-          const link = window.links[selectedGuid];
-          if (link) link.setStyle({ color: 'red' });
+          selectEntities([['e', selectedGuid]]);
           break;
         case 'field':
-          const field = window.fields[selectedGuid];
-          if (field) {
-            field.setStyle({ fillColor: 'red' });
-            field.bringToFront();
-          }
+          selectEntities([['r', selectedGuid]]);
           break;
+        case 'tile':
+          const tileParam = tileIDToTileParam(selectedGuid);
+          const maxTilesPerEdge =
+            window.TILE_PARAMS.TILES_PER_EDGE[
+              window.TILE_PARAMS.TILES_PER_EDGE.length - 1
+            ];
+          const params = {
+            tilesPerEdge:
+              window.TILE_PARAMS.TILES_PER_EDGE[tileParam.zoom] ||
+              maxTilesPerEdge,
+          } as MapZoomTileParameters;
+          const latNorth = tileToLat(tileParam.y, params);
+          const latSouth = tileToLat(tileParam.y + 1, params);
+          const lngWest = tileToLng(tileParam.x, params);
+          const lngEast = tileToLng(tileParam.x + 1, params);
+          const tile = $tiles[selectedGuid];
+          if (tile) selectEntities(tile.entities);
+          tilePolygon = L.rectangle(
+            [
+              [latSouth, lngWest],
+              [latNorth, lngEast],
+            ],
+            { color: 'purple' }
+          ).addTo(window.map);
         default:
           break;
       }

@@ -1,7 +1,9 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  import { entityInTile, getTileList, getTileTime, timestampToString } from './utils';
+  import { tiles } from './stores';
+
+  import { timestampToString } from './utils';
 
   const dispatch = createEventDispatcher();
 
@@ -13,15 +15,13 @@
   let tileList = [];
 
   $: {
-    tileList = getTileList().filter(
+    tileList = Object.keys($tiles).filter(
       (tid) =>
-        (!portalID || entityInTile(portalID, tid)) &&
-        (!linkID || entityInTile(linkID, tid)) &&
-        (!fieldID || entityInTile(fieldID, tid))
+        (!portalID || $tiles[tid].entities.some((e) => e[1] == portalID)) &&
+        (!linkID || $tiles[tid].entities.some((e) => e[1] == linkID)) &&
+        (!fieldID || $tiles[tid].entities.some((e) => e[1] == fieldID))
     );
-    tileList.sort(
-      (a, b) => getTileTime(b) - getTileTime(a)
-    );
+    tileList.sort((a, b) => $tiles[b].time - $tiles[a].time);
   }
 
   function onClick(guid: FieldGUID) {
@@ -35,7 +35,7 @@
       {tid}
     </div>
     <div class:active={tid == activeID} class="date">
-      {timestampToString(getTileTime(tid))}
+      {timestampToString($tiles[tid].time)}
     </div>
   {/each}
 </div>

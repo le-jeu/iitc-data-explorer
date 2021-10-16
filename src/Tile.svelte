@@ -1,34 +1,39 @@
 <script lang="ts">
   import DataTable from './DataTable.svelte';
 
+  import { tiles } from './stores';
+
   import Portals from './Portals.svelte';
   import Links from './Links.svelte';
   import Fields from './Fields.svelte';
 
-  import { getTile, getTileTime, timestampToString } from './utils';
-
+  import { timestampToString } from './utils';
 
   export let tid: TileID = null;
 
-  let tile: RequestTile = null;
+  let tile: TileInfo = null;
   $: {
-    if (tid)
-    	tile = getTile(tid);
+    if (tid) tile = $tiles[tid];
     else tile = null;
   }
 
-  let properties = {}
+  let properties = {};
 
   $: {
-  	if (!tile) properties = {};
-  	else {
-  		const [zoom, x, y, minlvl, maxlvl, maxhealth] = tid.split("_");
-  		properties = {
-  			id: tid,
-        time: timestampToString(getTileTime(tid)),
-        zoom, x, y, minlvl, maxlvl, maxhealth
-  		};
-  	}
+    if (!tile) properties = {};
+    else {
+      const [zoom, x, y, minlvl, maxlvl, maxhealth] = tid.split('_');
+      properties = {
+        id: tid,
+        time: timestampToString(tile.time),
+        zoom,
+        x,
+        y,
+        minlvl,
+        maxlvl,
+        maxhealth,
+      };
+    }
   }
 </script>
 
