@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { createEventDispatcher, onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte';
+
+  import DataList from './DataList.svelte';
 
   import { tiles } from './stores';
 
-  import { tileIDToTileParam, timestampToString } from './utils';
-
-  const dispatch = createEventDispatcher();
+  import { tileIDToTileParam } from './utils';
 
   export let portalID: PortalGUID = null;
   export let linkID: LinkGUID = null;
@@ -55,44 +55,14 @@
     }
   }
 
-  function onClick(guid: FieldGUID) {
-    dispatch('select', { type: 'tile', guid: guid });
-  }
-
   onDestroy(() => {
     tilesPolygon.remove();
   });
 </script>
 
-<div class="grid">
-  {#each tileList as tid (tid)}
-    <div class:active={tid == activeID} on:click={() => onClick(tid)}>
-      {tid}
-    </div>
-    <div class:active={tid == activeID} class="date">
-      {timestampToString($tiles[tid].time)}
-    </div>
-  {/each}
-</div>
-
-<style>
-  .grid {
-    display: grid;
-    grid-template-columns: auto max-content;
-    grid-gap: 4px;
-    font-family: monospace;
-  }
-
-  .grid div {
-    white-space: nowrap;
-    max-width: 30em;
-  }
-
-  .date {
-    margin-left: auto;
-  }
-
-  .active {
-    color: green;
-  }
-</style>
+<DataList
+  type="tile"
+  items={tileList.map((guid) => [guid, $tiles[guid].time, false])}
+  {activeID}
+  on:select
+/>

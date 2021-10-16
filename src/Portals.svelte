@@ -1,11 +1,7 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import DataList from './DataList.svelte';
 
   import { portals, selectedPortal, tiles } from './stores';
-
-  import { timestampToString } from './utils';
-
-  const dispath = createEventDispatcher();
 
   export let activeID: PortalGUID | false = false;
   export let linkID: LinkGUID = null;
@@ -35,63 +31,16 @@
       );
     }
   }
-
-  function onClick(guid: PortalGUID) {
-    dispath('select', { type: 'portal', guid: guid });
-  }
 </script>
 
-<div class="grid">
-  {#each portalList as guid (guid)}
-    <div
-      class:selected={guid == $selectedPortal}
-      class:active={guid == activeID}
-      class:raw={!$portals[guid].options.data.title}
-      title={guid}
-      on:click={() => onClick(guid)}
-    >
-      {$portals[guid].options.data.title || guid}
-    </div>
-    <div
-      class:selected={guid == $selectedPortal}
-      class:active={guid == activeID}
-      class="raw date"
-    >
-      {timestampToString($portals[guid].options.timestamp)}
-    </div>
-  {/each}
-</div>
-
-<style>
-  .grid {
-    display: grid;
-    grid-template-columns: auto max-content;
-    grid-gap: 4px;
-  }
-
-  .grid div:nth-child(2n + 1) {
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-
-  .grid div {
-    white-space: nowrap;
-    max-width: 30em;
-  }
-
-  .grid div.raw {
-    font-family: monospace;
-  }
-
-  .date {
-    margin-left: auto;
-  }
-
-  .selected {
-    color: red;
-  }
-
-  .active {
-    color: green;
-  }
-</style>
+<DataList
+  type="portal"
+  items={portalList.map((guid) => [
+    guid,
+    $portals[guid].options.timestamp,
+    $portals[guid].options.data.title,
+  ])}
+  selectedID={$selectedPortal}
+  {activeID}
+  on:select
+/>

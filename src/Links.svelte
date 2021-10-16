@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import DataList from './DataList.svelte';
 
   import { links, tiles } from './stores';
 
-  import { portalInLink, linkInField, timestampToString } from './utils';
-
-  const dispatch = createEventDispatcher();
+  import { portalInLink, linkInField } from './utils';
 
   export let portalID: PortalGUID = null;
   export let activeID: LinkGUID | false = false;
@@ -30,45 +28,11 @@
       (a, b) => $links[b].options.timestamp - $links[a].options.timestamp
     );
   }
-
-  function onClick(guid: LinkGUID) {
-    dispatch('select', { type: 'link', guid: guid });
-  }
 </script>
 
-<div class="grid">
-  {#each linkList as guid (guid)}
-    <div
-      class:active={guid == activeID}
-      class="raw"
-      on:click={() => onClick(guid)}
-    >
-      {guid}
-    </div>
-    <div class:active={guid == activeID} class="raw date">
-      {timestampToString($links[guid].options.timestamp)}
-    </div>
-  {/each}
-</div>
-
-<style>
-  .grid {
-    display: grid;
-    grid-template-columns: auto max-content;
-    grid-gap: 4px;
-    font-family: monospace;
-  }
-
-  .grid div {
-    white-space: nowrap;
-    max-width: 30em;
-  }
-
-  .date {
-    margin-left: auto;
-  }
-
-  .active {
-    color: green;
-  }
-</style>
+<DataList
+  type="link"
+  items={linkList.map((guid) => [guid, $links[guid].options.timestamp, false])}
+  {activeID}
+  on:select
+/>
