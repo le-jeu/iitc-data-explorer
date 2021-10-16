@@ -3,13 +3,14 @@
 
   import { portals, selectedPortal } from './stores';
 
-  import { timestampToString } from './utils';
+  import { getTile, timestampToString } from './utils';
 
   const dispath = createEventDispatcher();
 
   export let activeID: PortalGUID | false = false;
   export let linkID: LinkGUID = null;
   export let fieldID: FieldGUID = null;
+  export let tileID: TileID = null;
 
   let portalList = [];
   $: {
@@ -21,6 +22,11 @@
       const field = window.fields[fieldID];
       if (!field) portalList = [];
       else portalList = field.options.data.points.map((p) => p.guid);
+    } else if (tileID) {
+      const tile = getTile(tileID);
+      if (!tile) portalList = [];
+      else portalList = tile.gameEntities.filter((e) => e[2][0] == 'p').map((p) => p[0]);
+      portalList = portalList.filter((a) => $portals[a]);
     } else {
       portalList = Object.keys($portals);
       portalList.sort(

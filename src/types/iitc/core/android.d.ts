@@ -53,5 +53,5 @@ declare global {
     reloadIITC(clearCache?: boolean /*= false*/): void;
   }
 
-  let android: Android;
+  var android: Android;
 }

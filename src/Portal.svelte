@@ -6,6 +6,8 @@
   import Links from './Links.svelte';
   import Fields from './Fields.svelte';
 
+  import Tiles from './Tiles.svelte';
+
   import { timestampToString } from './utils';
 
   export let guid: PortalGUID = null;
@@ -73,6 +75,9 @@
 
     <h3>Fields</h3>
     <Fields on:select portalID={guid} />
+
+    <h3>Tiles</h3>
+    <Tiles on:select portalID={guid} />
   {/if}
 </div>
 

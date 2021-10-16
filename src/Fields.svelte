@@ -3,22 +3,29 @@
 
   import { fields } from './stores';
 
-  import { portalInField, linkInField, timestampToString } from './utils';
+  import { getTile, portalInField, linkInField, timestampToString } from './utils';
 
   const dispatch = createEventDispatcher();
 
   export let portalID: PortalGUID = null;
   export let linkID: LinkGUID = null;
   export let activeID: FieldGUID | false = false;
+  export let tileID: TileID = null;
 
   let fieldList = [];
-
   $: {
-    fieldList = Object.keys($fields).filter(
-      (guid) =>
-        (!portalID || portalInField(portalID, guid)) &&
-        (!linkID || linkInField(linkID, guid))
-    );
+    if (tileID) {
+      const tile = getTile(tileID);
+      if (!tile) fieldList = [];
+      else fieldList = tile.gameEntities.filter((e) => e[2][0] == 'r').map((p) => p[0]);
+      fieldList = fieldList.filter((a) => $fields[a]);
+    } else {
+      fieldList = Object.keys($fields).filter(
+        (guid) =>
+          (!portalID || portalInField(portalID, guid)) &&
+          (!linkID || linkInField(linkID, guid))
+      );
+    }
     fieldList.sort(
       (a, b) => $fields[b].options.timestamp - $fields[a].options.timestamp
     );

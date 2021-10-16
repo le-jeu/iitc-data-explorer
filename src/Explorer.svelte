@@ -4,14 +4,16 @@
   import Portal from './Portal.svelte';
   import Link from './Link.svelte';
   import Field from './Field.svelte';
+  import Tile from './Tile.svelte';
 
   import Portals from './Portals.svelte';
   import Links from './Links.svelte';
   import Fields from './Fields.svelte';
+  import Tiles from './Tiles.svelte';
 
   import { selectedPortal } from './stores';
 
-  let selectedType: 'portal' | 'link' | 'field' = null;
+  let selectedType: 'portal' | 'link' | 'field' | 'tile' = null;
   let selectedGuid = null;
 
   function unselect() {
@@ -25,6 +27,8 @@
       case 'field':
         const field = window.fields[selectedGuid];
         if (field) field.setStyle({ fillColor: COLORS[field.options.team] });
+        break;
+      default:
         break;
     }
   }
@@ -49,6 +53,8 @@
             field.bringToFront();
           }
           break;
+        default:
+          break;
       }
     } else {
       selectedGuid = null;
@@ -63,7 +69,7 @@
     }
   }
 
-  let tab: 'portals' | 'links' | 'fields' = 'portals';
+  let tab: 'portals' | 'links' | 'fields' | 'tiles' = 'portals';
 </script>
 
 <Dialog
@@ -81,6 +87,9 @@
         </li>
         <li on:click={() => (tab = 'fields')} class:active={tab == 'fields'}>
           Fields
+        </li>
+        <li on:click={() => (tab = 'tiles')} class:active={tab == 'tiles'}>
+          Tiles
         </li>
         {#if $selectedPortal}
           <li
@@ -107,6 +116,11 @@
           on:select={select}
           activeID={selectedType == 'field' && selectedGuid}
         />
+      {:else if tab == 'tiles'}
+        <Tiles
+          on:select={select}
+          activeID={selectedType == 'tile' && selectedGuid}
+        />
       {/if}
     </div>
     {#if selectedType}
@@ -117,6 +131,8 @@
           <Link on:select={select} guid={selectedGuid} />
         {:else if selectedType == 'field'}
           <Field on:select={select} guid={selectedGuid} />
+        {:else if selectedType == 'tile'}
+          <Tile on:select={select} tid={selectedGuid} />
         {/if}
       </div>
     {/if}

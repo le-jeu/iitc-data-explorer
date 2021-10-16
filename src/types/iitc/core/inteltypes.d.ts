@@ -1,3 +1,5 @@
+import { PortalGUID, LinkGUID, FieldGUID } from "./iitctypes";
+
 export namespace Intel {
   // PLAYER
   interface PlayerInfo {
@@ -15,9 +17,9 @@ export namespace Intel {
   }
 
   // ENTITY
-  type PortalDetails = [];
-  type FieldDetails = [];
-  type LinkDetails = [];
+  type PortalDetails = [PortalGUID, number, ['p']];
+  type FieldDetails = [FieldGUID, number, ['r']];
+  type LinkDetails = [LinkGUID, number, ['e']];
 
   // CHAT
   interface ChatCallback {
