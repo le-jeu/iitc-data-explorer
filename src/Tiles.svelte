@@ -28,28 +28,14 @@
   $: {
     tilesPolygon.clearLayers();
     if (portalID || linkID || fieldID) {
-      const maxTilesPerEdge =
-        window.TILE_PARAMS.TILES_PER_EDGE[
-          window.TILE_PARAMS.TILES_PER_EDGE.length - 1
-        ];
       for (const tid of tileList) {
-        const tileParam = tileIDToTileParam(tid);
-        const params = {
-          tilesPerEdge:
-            window.TILE_PARAMS.TILES_PER_EDGE[tileParam.zoom] ||
-            maxTilesPerEdge,
-        } as MapZoomTileParameters;
-
-        const latNorth = tileToLat(tileParam.y, params);
-        const latSouth = tileToLat(tileParam.y + 1, params);
-        const lngWest = tileToLng(tileParam.x, params);
-        const lngEast = tileToLng(tileParam.x + 1, params);
+        const param = tileIDToTileParam(tid);
         window.L.rectangle(
           [
-            [latSouth, lngWest],
-            [latNorth, lngEast],
+            [param.latSouth, param.lngWest],
+            [param.latNorth, param.lngEast],
           ],
-          { color: 'purple', interactive: false }
+          { color: 'purple' }
         ).addTo(tilesPolygon);
       }
     }

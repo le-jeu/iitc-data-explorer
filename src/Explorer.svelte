@@ -15,30 +15,16 @@
 
   import { tiles, selectedPortal } from './stores';
 
-  import { tileIDToTileParam } from './utils';
+  import { tileIDToTileParam, coveredS2CellsByTile } from './utils';
 
   let selectedType: 'portal' | 'link' | 'field' | 'tile' = null;
   let selectedGuid = null;
 
-  let tilePolygon = null;
+  let hlLayer = window.L.featureGroup().addTo(window.map);
+
   let selectedEntities = [];
   function selectEntities(entities: TileInfo['entities']) {
-    for (const e of selectedEntities) {
-      const [type, guid] = e;
-      switch (type) {
-        case 'p':
-          break;
-        case 'e':
-          const link = window.links[guid];
-          if (link) link.setStyle({ color: COLORS[link.options.team] });
-          break;
-        case 'r':
-          const field = window.fields[guid];
-          if (field) field.setStyle({ fillColor: COLORS[field.options.team] });
-          break;
-      }
-    }
-
+    hlLayer.clearLayers();
     selectedEntities = entities;
     for (const e of selectedEntities) {
       const [type, guid] = e;
@@ -47,28 +33,28 @@
           break;
         case 'e':
           const link = window.links[guid];
-          if (link) {
-            link.setStyle({ color: 'red' });
-            link.bringToFront();
-          }
+          if (link)
+            window.L.geodesicPolyline(link.getLatLngs(), {
+              color: 'red',
+            }).addTo(hlLayer);
+
           break;
         case 'r':
           const field = window.fields[guid];
-          if (field) {
-            field.setStyle({ fillColor: 'red' });
-            field.bringToFront();
-          }
+          if (field)
+            window.L.geodesicPolygon(field.getLatLngs(), {
+              stroke: false,
+              fillColor: 'red',
+            }).addTo(hlLayer);
+
           break;
       }
     }
+    hlLayer.bringToFront();
   }
 
   function select(e: { detail?: { type: typeof selectedType; guid: string } }) {
-    if (tilePolygon) {
-      tilePolygon.remove();
-      tilePolygon = null;
-    }
-    selectEntities([]);
+    hlLayer.clearLayers();
     if (e.detail) {
       selectedType = e.detail.type;
       selectedGuid = e.detail.guid;
@@ -83,29 +69,22 @@
           selectEntities([['r', selectedGuid]]);
           break;
         case 'tile':
-          const tileParam = tileIDToTileParam(selectedGuid);
-          const maxTilesPerEdge =
-            window.TILE_PARAMS.TILES_PER_EDGE[
-              window.TILE_PARAMS.TILES_PER_EDGE.length - 1
-            ];
-          const params = {
-            tilesPerEdge:
-              window.TILE_PARAMS.TILES_PER_EDGE[tileParam.zoom] ||
-              maxTilesPerEdge,
-          } as MapZoomTileParameters;
-          const latNorth = tileToLat(tileParam.y, params);
-          const latSouth = tileToLat(tileParam.y + 1, params);
-          const lngWest = tileToLng(tileParam.x, params);
-          const lngEast = tileToLng(tileParam.x + 1, params);
+          const param = tileIDToTileParam(selectedGuid);
           const tile = $tiles[selectedGuid];
           if (tile) selectEntities(tile.entities);
-          tilePolygon = window.L.rectangle(
+          window.L.rectangle(
             [
-              [latSouth, lngWest],
-              [latNorth, lngEast],
+              [param.latSouth, param.lngWest],
+              [param.latNorth, param.lngEast],
             ],
             { color: 'purple' }
-          ).addTo(window.map);
+          ).addTo(hlLayer);
+          for (const s2 of coveredS2CellsByTile(selectedGuid)) {
+            window.L.geodesicPolygon(s2.getCornerLatLngs(), {
+              color: 'yellow',
+              fill: false,
+            }).addTo(hlLayer);
+          }
         default:
           break;
       }
@@ -126,7 +105,7 @@
 
   onDestroy(() => {
     selectEntities([]);
-    if (tilePolygon) tilePolygon.remove();
+    hlLayer.remove();
   });
 </script>
 
