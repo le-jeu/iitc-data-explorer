@@ -67,17 +67,21 @@ export function tileIDToTileParam(tid: TileID) {
 
 export function coveredS2CellsByTile(tid: TileID) {
   if (!window.S2) return [];
-  const s2Map = [4, 4, 4, 4, 4, 5, 5, 7, 9, 10, 10, 11, 13, 13, 13, 14];
   const param = tileIDToTileParam(tid);
+  const bounds = window.L.latLngBounds(
+    [param.latSouth - 0.1, param.lngWest],
+    [param.latNorth, param.lngEast]
+  ).pad(0.01);
+  const s2Map = [4, 4, 4, 4, 4, 5, 5, 7, 9, 10, 10, 11, 13, 13, 13, 14];
   const r = {};
   for (let i = 3; i <= param.zoom && i <= 15; i++) {
     const z = s2Map[i];
     if (z in r) continue;
     const ss = [
-      S2.S2Cell.FromLatLng(window.L.latLng([param.latNorth, param.lngWest]), z),
-      S2.S2Cell.FromLatLng(window.L.latLng([param.latNorth, param.lngEast]), z),
-      S2.S2Cell.FromLatLng(window.L.latLng([param.latSouth, param.lngWest]), z),
-      S2.S2Cell.FromLatLng(window.L.latLng([param.latSouth, param.lngEast]), z),
+      S2.S2Cell.FromLatLng(bounds.getSouthEast(), z),
+      S2.S2Cell.FromLatLng(bounds.getSouthWest(), z),
+      S2.S2Cell.FromLatLng(bounds.getNorthEast(), z),
+      S2.S2Cell.FromLatLng(bounds.getNorthWest(), z),
     ];
     r[z] = {
       [ss[0].toString()]: ss[0],
@@ -88,6 +92,27 @@ export function coveredS2CellsByTile(tid: TileID) {
   }
   const ret: S2.S2Cell[] = [];
   for (const z in r) for (const key in r[z]) ret.push(r[z][key]);
+
+  // dfs on s2 tiles
+  const toTest: S2.S2Cell[] = [];
+  const seen: { [key: string]: boolean } = {};
+  for (const s2 of ret) {
+    seen[s2.toString()] = true;
+    toTest.push(s2);
+  }
+
+  while (toTest.length) {
+    const s = toTest.pop();
+    for (const n2 of s.getNeighbors()) {
+      if (n2.toString() in seen) continue;
+      seen[n2.toString()] = true;
+      const corners = n2.getCornerLatLngs();
+      if (corners.some((ll) => bounds.contains(ll))) {
+        ret.push(n2);
+        toTest.push(n2);
+      }
+    }
+  }
 
   return ret;
 }
