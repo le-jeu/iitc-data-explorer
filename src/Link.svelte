@@ -21,6 +21,11 @@
     }
   }
 
+  function length(l: IITC.Link) {
+    const [a, b] = l.getLatLngs();
+    return window.map.distance(a, b);
+  }
+
   $: properties = !link
     ? {}
     : {
@@ -33,6 +38,7 @@
         dGuid: link.options.data.dGuid,
         dLatE6: link.options.data.dLatE6,
         dLngE6: link.options.data.dLngE6,
+        length: length(link),
       };
 </script>
 
