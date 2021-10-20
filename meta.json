@@ -1,6 +1,6 @@
 {
   "name": "IITC plugin: Data Explorer",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "match": "https://intel.ingress.com/*",
   "namespace": "https://github.com/le-jeu",
   "description": "UI to explore intel available data",
