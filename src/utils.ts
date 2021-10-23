@@ -1,3 +1,5 @@
+import * as S2 from './s2';
+
 export function portalInField(pid: LinkGUID, fid: FieldGUID) {
   if (!window.fields[fid]) return false;
   return window.fields[fid].options.data.points.some((d) => d.guid == pid);
@@ -38,6 +40,27 @@ export function timestampToString(t: number) {
   )}.${milli.padStart(3, '0')}Z`;
 }
 
+export function coveredS2CellsByLink(linkid: LinkGUID) {
+  const link = window.links[linkid];
+  if (!link) return [];
+  const lls = link.getLatLngs();
+  const length = window.map.distance(lls[0], lls[1]);
+
+  const s2Dist: [number, number][] = [
+    [300, 13],
+    [800, 13],
+    [2500, 11],
+    [5000, 10],
+    [10000, 9],
+    [60000, 7],
+    [200000, 5],
+    [12000000, 4],
+  ];
+  const s2Level = s2Dist.find((p) => p[0] > length)[1];
+  const covering = new S2.S2RegionCover();
+  return covering.getCovering(new S2.S2Polyline(lls.map(S2.LatLngToXYZ)), s2Level);
+}
+
 export function tileIDToTileParam(tid: TileID) {
   const [zoom, x, y, minlvl, maxlvl, maxhealth] = tid.split('_');
   const maxTilesPerEdge =
@@ -66,10 +89,9 @@ export function tileIDToTileParam(tid: TileID) {
 }
 
 export function coveredS2CellsByTile(tid: TileID) {
-  if (!window.S2) return [];
   const param = tileIDToTileParam(tid);
   const bounds = window.L.latLngBounds(
-    [param.latSouth - 0.1, param.lngWest],
+    [param.latSouth, param.lngWest],
     [param.latNorth, param.lngEast]
   ).pad(0.01);
   const s2Map = [4, 4, 4, 4, 4, 5, 5, 7, 9, 10, 10, 11, 13, 13, 13, 14];

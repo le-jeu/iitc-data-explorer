@@ -3,11 +3,11 @@ import * as L from 'leaflet';
 // geodesic
 declare module 'leaflet' {
   function geodesicPolyline(
-    latlngs: LatLng[],
+    latlngs: LatLngExpression[],
     options?: PolylineOptions
   ): GeodesicPolyline;
   function geodesicPolygon(
-    latlngs: LatLng[],
+    latlngs: LatLngExpression[],
     options?: PolylineOptions
   ): GeodesicPolygon;
 

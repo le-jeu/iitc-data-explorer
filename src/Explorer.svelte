@@ -15,7 +15,7 @@
 
   import { tiles, selectedPortal } from './stores';
 
-  import { tileIDToTileParam, coveredS2CellsByTile } from './utils';
+  import { tileIDToTileParam, coveredS2CellsByTile, coveredS2CellsByLink } from './utils';
 
   let selectedType: 'portal' | 'link' | 'field' | 'tile' = null;
   let selectedGuid = null;
@@ -64,6 +64,12 @@
           break;
         case 'link':
           selectEntities([['e', selectedGuid]]);
+          for (const s2 of coveredS2CellsByLink(selectedGuid)) {
+            window.L.geodesicPolygon(s2.getCornerLatLngs(), {
+              color: 'yellow',
+              fill: false,
+            }).addTo(hlLayer);
+          }
           break;
         case 'field':
           selectEntities([['r', selectedGuid]]);
