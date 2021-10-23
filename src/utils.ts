@@ -47,7 +47,7 @@ export function coveredS2CellsByLink(linkid: LinkGUID) {
   const length = window.map.distance(lls[0], lls[1]);
 
   const s2Dist: [number, number][] = [
-    [300, 13],
+    [300, 14],
     [800, 13],
     [2500, 11],
     [5000, 10],
