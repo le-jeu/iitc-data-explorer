@@ -19,6 +19,7 @@
     tileIDToTileParam,
     coveredS2CellsByTile,
     coveredS2CellsByLink,
+    coveredS2CellsByField,
   } from './utils';
 
   let selectedType: 'portal' | 'link' | 'field' | 'tile' = null;
@@ -80,6 +81,13 @@
           break;
         case 'field':
           selectEntities([['r', selectedGuid]]);
+          for (const s2 of coveredS2CellsByField(selectedGuid)) {
+            window.L.geodesicPolygon(s2.getCornerLatLngs(), {
+              color: 'yellow',
+              fill: false,
+              interactive: false,
+            }).addTo(hlLayer);
+          }
           break;
         case 'tile':
           const param = tileIDToTileParam(selectedGuid);

@@ -218,6 +218,10 @@ function dot(a: XYZ, b: XYZ) {
   return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
 
+function det(a: XYZ, b: XYZ, c: XYZ) {
+  return dot(cross(a, b), c);
+}
+
 function simple_crossing(a: XYZ, b: XYZ, c: XYZ, d: XYZ) {
   const ab = cross(a, b);
   const acb = -dot(ab, c);
@@ -230,7 +234,10 @@ function simple_crossing(a: XYZ, b: XYZ, c: XYZ, d: XYZ) {
   return acb * cbd > 0 && acb * dac > 0;
 }
 
-interface S2Region {}
+interface S2Region {
+  mayIntersect(s: S2Cell): boolean;
+  empty(): boolean;
+}
 
 export class S2Polyline implements S2Region {
   points: XYZ[];
@@ -242,10 +249,71 @@ export class S2Polyline implements S2Region {
   empty() {
     return this.points.length == 0;
   }
+
+  mayIntersect(s: S2Cell) {
+    if (this.empty()) return false;
+
+    for (const point of this.points) if (s.contains(point)) return true;
+
+    const corners = s.getCornerXYZ();
+    for (let i = this.points.length - 1; i > 0; i--)
+      if (
+        corners.some((p, j) =>
+          simple_crossing(
+            this.points[i],
+            this.points[i - 1],
+            p,
+            corners[(j + 1) % 4]
+          )
+        )
+      )
+        return true;
+
+    return false;
+  }
+}
+
+// Triangle in a single semisphere
+export class S2Triangle extends S2Polyline {
+  center: XYZ;
+  centerSides: [number, number, number];
+
+  constructor(a: XYZ, b: XYZ, c: XYZ) {
+    super([a, b, c, a]); // loop for polyline
+    this.center = [a[0] + b[0] + c[0], a[1] + b[1] + c[1], a[2] + b[2] + c[2]];
+    this.centerSides = [
+      det(this.center, a, b),
+      det(this.center, b, c),
+      det(this.center, c, a),
+    ];
+  }
+
+  empty() {
+    return false;
+  }
+
+  containsPoint(xyz: XYZ) {
+    if (det(xyz, this.points[0], this.points[1]) * this.centerSides[0] < 0)
+      return false;
+    if (det(xyz, this.points[1], this.points[2]) * this.centerSides[1] < 0)
+      return false;
+    if (det(xyz, this.points[2], this.points[0]) * this.centerSides[2] < 0)
+      return false;
+    return true;
+  }
+
+  mayIntersect(s: S2Cell) {
+    if (S2Polyline.prototype.mayIntersect.call(this, s)) return true;
+
+    const corners = s.getCornerXYZ();
+    for (const p of corners) if (this.containsPoint(p)) return true;
+
+    return false;
+  }
 }
 
 export class S2RegionCover {
-  region: S2Polyline;
+  region: S2Region;
   level: number;
 
   getCoveringPoint(point: XYZ) {
@@ -255,23 +323,19 @@ export class S2RegionCover {
     return S2Cell.FromFaceIJ(face, ij, this.level);
   }
 
-  getCoveringLine(a: XYZ, b: XYZ): S2Cell[] {
+  getCoveringFromCell(start: S2Cell): S2Cell[] {
     const ret: S2Cell[] = [];
-    const start = this.getCoveringPoint(a);
     const frontier = {};
     const stack = [start];
+    frontier[start.toString()] = true;
     while (stack.length) {
       const s = stack.pop();
-      if (s.toString() in frontier) continue;
-      frontier[s.toString()] = true;
+      if (!this.region.mayIntersect(s)) continue;
 
-      const corners = s.getCornerXYZ();
-
-      if (
-        corners.some((p, i) => simple_crossing(a, b, p, corners[(i + 1) % 4]))
-      ) {
-        ret.push(s);
-        for (const ns of s.getNeighbors()) {
+      ret.push(s);
+      for (const ns of s.getNeighbors()) {
+        if (!(ns.toString() in frontier)) {
+          frontier[ns.toString()] = true;
           stack.push(ns);
         }
       }
@@ -279,25 +343,16 @@ export class S2RegionCover {
     return ret;
   }
 
-  getCovering(region: S2Polyline, level: Level): S2Cell[] {
+  getCovering(region: S2Region, level: Level): S2Cell[] {
     this.region = region;
     this.level = level;
     if (this.region.empty()) return [];
 
-    const ret: { [id: string]: S2Cell } = {};
-    for (const xyz of this.region.points) {
-      const s = this.getCoveringPoint(xyz);
-      ret[s.toString()] = s;
-    }
-
-    for (let i = this.region.points.length - 1; i > 0; i--) {
-      const covering = this.getCoveringLine(
-        this.region.points[i],
-        this.region.points[i - 1]
+    if (this.region instanceof S2Polyline)
+      return this.getCoveringFromCell(
+        this.getCoveringPoint(this.region.points[0])
       );
-      for (const key in covering) ret[key] = covering[key];
-    }
-    return Object.values(ret);
+    return [];
   }
 }
 
@@ -306,6 +361,8 @@ export class S2Cell {
   face: Face;
   ij: IJ;
   level: Level;
+
+  private uvBound: [UV, UV];
 
   //static method to construct
   static FromLatLng(latLng: LatLng, level: Level) {
@@ -325,6 +382,10 @@ export class S2Cell {
     cell.ij = ij;
     cell.level = level;
 
+    const uv0 = STToUV(IJToST(cell.ij, cell.level, [0, 0]));
+    const uv1 = STToUV(IJToST(cell.ij, cell.level, [1, 1]));
+    cell.uvBound = [uv0, uv1];
+
     return cell;
   }
 
@@ -338,6 +399,16 @@ export class S2Cell {
       this.ij[1] +
       ']@' +
       this.level
+    );
+  }
+
+  contains(xyz: XYZ) {
+    const [face, uv] = XYZToFaceUV(xyz);
+    if (face != this.face) return false;
+
+    const [uv0, uv1] = this.uvBound;
+    return (
+      uv0[0] <= uv[0] && uv[0] <= uv1[0] && uv0[1] <= uv[1] && uv[1] <= uv1[1]
     );
   }
 
