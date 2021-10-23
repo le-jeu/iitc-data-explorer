@@ -114,7 +114,7 @@ function FaceUVToXYZ(face: Face, uv: UV): XYZ {
 }
 
 function STToUV(st: ST): UV {
-  function singleSTtoUV(st: number) {
+  function quadSTtoUV(st: number) {
     if (st >= 0.5) {
       return (1 / 3.0) * (4 * st * st - 1);
     } else {
@@ -122,11 +122,11 @@ function STToUV(st: ST): UV {
     }
   }
 
-  return [singleSTtoUV(st[0]), singleSTtoUV(st[1])];
+  return [quadSTtoUV(st[0]), quadSTtoUV(st[1])];
 }
 
 function UVToST(uv: UV): ST {
-  function singleUVtoST(uv: number) {
+  function quadUVtoST(uv: number) {
     if (uv >= 0) {
       return 0.5 * Math.sqrt(1 + 3 * uv);
     } else {
@@ -134,7 +134,7 @@ function UVToST(uv: UV): ST {
     }
   }
 
-  return [singleUVtoST(uv[0]), singleUVtoST(uv[1])];
+  return [quadUVtoST(uv[0]), quadUVtoST(uv[1])];
 }
 
 function STToIJ(st: ST, order: Level): IJ {
