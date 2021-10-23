@@ -37,8 +37,8 @@
   type="portal"
   items={portalList.map((guid) => [
     guid,
-    $portals[guid].options.timestamp,
-    $portals[guid].options.data.title,
+    $portals[guid] ? $portals[guid].options.timestamp : 0,
+    $portals[guid] && $portals[guid].options.data.title,
   ])}
   selectedID={$selectedPortal}
   {activeID}
