@@ -15,7 +15,11 @@
 
   import { tiles, selectedPortal } from './stores';
 
-  import { tileIDToTileParam, coveredS2CellsByTile, coveredS2CellsByLink } from './utils';
+  import {
+    tileIDToTileParam,
+    coveredS2CellsByTile,
+    coveredS2CellsByLink,
+  } from './utils';
 
   let selectedType: 'portal' | 'link' | 'field' | 'tile' = null;
   let selectedGuid = null;
@@ -36,6 +40,7 @@
           if (link)
             window.L.geodesicPolyline(link.getLatLngs(), {
               color: 'red',
+              interactive: false,
             }).addTo(hlLayer);
 
           break;
@@ -45,6 +50,7 @@
             window.L.geodesicPolygon(field.getLatLngs(), {
               stroke: false,
               fillColor: 'red',
+              interactive: false,
             }).addTo(hlLayer);
 
           break;
@@ -68,6 +74,7 @@
             window.L.geodesicPolygon(s2.getCornerLatLngs(), {
               color: 'yellow',
               fill: false,
+              interactive: false,
             }).addTo(hlLayer);
           }
           break;
@@ -83,7 +90,7 @@
               [param.latSouth, param.lngWest],
               [param.latNorth, param.lngEast],
             ],
-            { color: 'purple' }
+            { color: 'purple', interactive: false }
           ).addTo(hlLayer);
           for (const s2 of coveredS2CellsByTile(selectedGuid)) {
             window.L.geodesicPolygon(s2.getCornerLatLngs(), {
@@ -94,6 +101,7 @@
         default:
           break;
       }
+      hlLayer.bringToFront();
     } else {
       selectedGuid = null;
       selectedType = null;

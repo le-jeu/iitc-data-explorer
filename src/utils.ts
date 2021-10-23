@@ -58,7 +58,10 @@ export function coveredS2CellsByLink(linkid: LinkGUID) {
   ];
   const s2Level = s2Dist.find((p) => p[0] > length)[1];
   const covering = new S2.S2RegionCover();
-  return covering.getCovering(new S2.S2Polyline(lls.map(S2.LatLngToXYZ)), s2Level);
+  return covering.getCovering(
+    new S2.S2Polyline(lls.map(S2.LatLngToXYZ)),
+    s2Level
+  );
 }
 
 export function tileIDToTileParam(tid: TileID) {

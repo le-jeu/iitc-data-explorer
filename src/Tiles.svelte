@@ -35,7 +35,7 @@
             [param.latSouth, param.lngWest],
             [param.latNorth, param.lngEast],
           ],
-          { color: 'purple' }
+          { color: 'purple', interactive: false }
         ).addTo(tilesPolygon);
       }
     }
