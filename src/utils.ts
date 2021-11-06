@@ -125,7 +125,7 @@ export function coveredS2CellsByTile(tid: TileID) {
     [param.latSouth, param.lngWest],
     [param.latNorth, param.lngEast]
   ).pad(0.01);
-  const s2Map = [4, 4, 4, 4, 4, 5, 5, 7, 9, 10, 10, 11, 13, 13, 13, 14];
+  const s2Map = [4, 4, 4, 4, 4, 5, 5, 7, 9, 10, 10, 11, 13, 14, 14, 14];
   const r = {};
   for (let i = 3; i <= param.zoom && i <= 15; i++) {
     const z = s2Map[i];
