@@ -92,6 +92,43 @@ export function coveredS2CellsByField(fieldid: FieldGUID) {
   );
 }
 
+export function approxS2FieldCovering(fieldid: FieldGUID, limit = 200) {
+  const field = window.fields[fieldid];
+  if (!field) return [];
+  const [a, b, c] = field.getLatLngs();
+  const triangle = new S2.S2Triangle(
+    S2.LatLngToXYZ(a),
+    S2.LatLngToXYZ(b),
+    S2.LatLngToXYZ(c)
+  );
+
+  const covering = new S2.S2RegionCover();
+  const candidates = covering.getCovering(triangle, 4);
+  const fullCells: S2.S2Cell[] = [];
+  if (candidates.length == 0) return [];
+  while (
+    candidates.length &&
+    candidates[0].level < 13 &&
+    candidates.length < limit
+  ) {
+    const cell = candidates.shift();
+    if (cell.getCornerXYZ().every((xyz) => triangle.containsPoint(xyz))) {
+      fullCells.push(cell);
+      limit--;
+    } else {
+      const children = cell
+        .getChildren()
+        .filter((child) => triangle.mayIntersect(child));
+      if (children.length == 4 && cell.level == 12) {
+        fullCells.push(cell);
+      } else {
+        candidates.push(...children);
+      }
+    }
+  }
+  return candidates.concat(fullCells);
+}
+
 export function tileIDToTileParam(tid: TileID) {
   const [zoom, x, y, minlvl, maxlvl, maxhealth] = tid.split('_');
   const maxTilesPerEdge =

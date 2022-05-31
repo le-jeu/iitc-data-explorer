@@ -482,4 +482,26 @@ export class S2Cell {
       fromFaceIJWrap(face, [i, j + 1], level),
     ];
   }
+
+  getChildren() {
+    const face = this.face;
+    const i = this.ij[0] * 2;
+    const j = this.ij[1] * 2;
+    const level = this.level + 1;
+    return [
+      S2Cell.FromFaceIJ(face, [i, j], level),
+      S2Cell.FromFaceIJ(face, [i, j + 1], level),
+      S2Cell.FromFaceIJ(face, [i + 1, j], level),
+      S2Cell.FromFaceIJ(face, [i + 1, j + 1], level),
+    ];
+  }
+
+  getParent() {
+    if (this.level <= 1) return null;
+    const face = this.face;
+    const i = this.ij[0] >> 1;
+    const j = this.ij[1] >> 1;
+    const level = this.level - 1;
+    return S2Cell.FromFaceIJ(face, [i, j], level);
+  }
 }

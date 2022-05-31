@@ -1,5 +1,6 @@
 <script lang="ts">
   import Explorer from './Explorer.svelte';
+  import FieldCovering from './FieldCovering.svelte';
 
   import { portals, links, fields, tiles, selectedPortal } from './stores';
 
@@ -63,7 +64,16 @@
     });
     exp.$on('close', () => exp.$destroy());
   }
+
+  function openFieldCovering() {
+    const fc = new FieldCovering({
+      target: document.body,
+    });
+    fc.$on('close', () => fc.$destroy());
+  }
 </script>
 
 <!-- svelte-ignore a11y-missing-attribute -->
 <a on:click={openExplorer}>DataExplorer</a>
+<!-- svelte-ignore a11y-missing-attribute -->
+<a on:click={openFieldCovering}>FieldCovering</a>
