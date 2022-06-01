@@ -92,7 +92,13 @@ export function coveredS2CellsByField(fieldid: FieldGUID) {
   );
 }
 
-export function approxS2FieldCovering(fieldid: FieldGUID, limit = 1000) {
+export function approxS2FieldCovering(
+  fieldid: FieldGUID,
+  minLevel = 4,
+  maxLevel = 13,
+  limit = 1000,
+  merge = true
+) {
   const field = window.fields[fieldid];
   if (!field) return [];
   const [a, b, c] = field.getLatLngs();
@@ -103,42 +109,41 @@ export function approxS2FieldCovering(fieldid: FieldGUID, limit = 1000) {
   );
 
   const covering = new S2.S2RegionCover();
-  const candidates = covering.getCovering(triangle, 4);
+  const candidates = covering.getCovering(triangle, minLevel);
   const fullCells: S2.S2Cell[] = [];
   if (candidates.length == 0) return [];
   while (
     candidates.length &&
-    candidates[0].level < 13 &&
+    candidates[0].level <= maxLevel &&
     candidates.length < limit
   ) {
     const cell = candidates.shift();
-    if (cell.getCornerXYZ().every((xyz) => triangle.containsPoint(xyz))) {
+    if (
+      cell.level >= maxLevel ||
+      cell.getCornerXYZ().every((xyz) => triangle.containsPoint(xyz))
+    ) {
       fullCells.push(cell);
       limit--;
+      // merge full cells
+      while (merge && fullCells.length >= 4) {
+        const lastParent = fullCells[fullCells.length - 1].getParent();
+        const key = lastParent.toString();
+        if (
+          fullCells[fullCells.length - 2].getParent().toString() === key &&
+          fullCells[fullCells.length - 3].getParent().toString() === key &&
+          fullCells[fullCells.length - 4].getParent().toString() === key
+        ) {
+          fullCells.splice(fullCells.length - 4, 4, lastParent);
+          limit += 3;
+        } else {
+          break;
+        }
+      }
     } else {
       const children = cell
         .getChildren()
         .filter((child) => triangle.mayIntersect(child));
-      if (cell.level == 12) {
-        fullCells.push(...children);
-        limit -= children.length;
-        while (fullCells.length >= 4) {
-          const lastParent = fullCells[fullCells.length - 1].getParent();
-          const key = lastParent.toString();
-          if (
-            fullCells[fullCells.length - 2].getParent().toString() === key &&
-            fullCells[fullCells.length - 3].getParent().toString() === key &&
-            fullCells[fullCells.length - 4].getParent().toString() === key
-          ) {
-            fullCells.splice(fullCells.length - 4, 4, lastParent);
-            limit += 3;
-          } else {
-            break;
-          }
-        }
-      } else {
-        candidates.push(...children);
-      }
+      candidates.push(...children);
     }
   }
   return candidates.concat(fullCells);

@@ -66,6 +66,10 @@
     font-family: monospace;
   }
 
+  .grid .guid {
+    cursor: pointer;
+  }
+
   .date {
     margin-left: auto;
   }

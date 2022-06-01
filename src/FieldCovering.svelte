@@ -8,6 +8,10 @@
   import { approxS2FieldCovering } from './utils';
 
   let selectedGuid = null;
+  let minLevel = 4;
+  let maxLevel = 13;
+  let maxCells = 1000;
+  let mergeCells = true;
 
   let hlLayer = window.L.featureGroup().addTo(window.map);
 
@@ -51,7 +55,13 @@
         case 'field':
           selectedGuid = e.detail.guid;
           selectEntities([['r', selectedGuid]]);
-          for (const s2 of approxS2FieldCovering(selectedGuid)) {
+          for (const s2 of approxS2FieldCovering(
+            selectedGuid,
+            minLevel,
+            maxLevel,
+            maxCells,
+            mergeCells
+          )) {
             window.L.geodesicPolygon(s2.getCornerLatLngs(), {
               color: 'purple',
               interactive: false,
@@ -78,6 +88,17 @@
   on:close
 >
   <div class="content">
+    <div class="options">
+      <table>
+        <tr><th>Min lvl</th><th>Max lvl</th><th>#Cells</th><th>Merge</th></tr>
+        <tr>
+          <td><input bind:value={minLevel} type="number" /></td>
+          <td><input bind:value={maxLevel} type="number" /></td>
+          <td><input bind:value={maxCells} type="number" /></td>
+          <td><input bind:checked={mergeCells} type="checkbox" /></td>
+        </tr>
+      </table>
+    </div>
     <div class="list">
       <Fields on:select={select} activeID={selectedGuid} />
     </div>
@@ -87,8 +108,6 @@
 <style type="text/css">
   .content {
     display: grid;
-    grid-gap: 24px;
-    grid-auto-flow: column;
   }
 
   .content > div {
