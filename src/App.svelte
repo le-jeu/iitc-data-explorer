@@ -37,7 +37,7 @@
     const ts = $tiles;
     const toDelete = [];
     // add some delay
-    const oldAge = lastRefresh - 1000 * 60 * 5;
+    const oldAge = lastRefresh - 1000 * 60 * 10;
     for (const id in ts) {
       if (ts[id].time < oldAge) toDelete.push(id);
     }

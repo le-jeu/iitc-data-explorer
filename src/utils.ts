@@ -92,7 +92,7 @@ export function coveredS2CellsByField(fieldid: FieldGUID) {
   );
 }
 
-export function approxS2FieldCovering(fieldid: FieldGUID, limit = 200) {
+export function approxS2FieldCovering(fieldid: FieldGUID, limit = 1000) {
   const field = window.fields[fieldid];
   if (!field) return [];
   const [a, b, c] = field.getLatLngs();
@@ -119,8 +119,23 @@ export function approxS2FieldCovering(fieldid: FieldGUID, limit = 200) {
       const children = cell
         .getChildren()
         .filter((child) => triangle.mayIntersect(child));
-      if (children.length == 4 && cell.level == 12) {
-        fullCells.push(cell);
+      if (cell.level == 12) {
+        fullCells.push(...children);
+        limit -= children.length;
+        while (fullCells.length >= 4) {
+          const lastParent = fullCells[fullCells.length - 1].getParent();
+          const key = lastParent.toString();
+          if (
+            fullCells[fullCells.length - 2].getParent().toString() === key &&
+            fullCells[fullCells.length - 3].getParent().toString() === key &&
+            fullCells[fullCells.length - 4].getParent().toString() === key
+          ) {
+            fullCells.splice(fullCells.length - 4, 4, lastParent);
+            limit += 3;
+          } else {
+            break;
+          }
+        }
       } else {
         candidates.push(...children);
       }
