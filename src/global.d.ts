@@ -45,4 +45,10 @@ declare global {
     time: number;
     entities: (['p', PortalGUID] | ['e', LinkGUID] | ['r', FieldGUID])[];
   }
+
+  interface chatStorage {
+    oldestGUID: string;
+    newestGUID: string;
+    guids: string[];
+  }
 }

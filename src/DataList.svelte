@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import { timestampToString } from './utils';
+  import { chatJumpToDate } from './iitc-utils';
 
   const dispath = createEventDispatcher();
 
@@ -33,6 +34,7 @@
       class="date raw"
       class:selected={selectedID == item[0]}
       class:active={activeID == item[0]}
+      on:dblclick={() => chatJumpToDate(item[1])}
     >
       {timestampToString(item[1])}
     </div>
