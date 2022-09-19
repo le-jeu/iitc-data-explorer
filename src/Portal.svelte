@@ -81,7 +81,7 @@
   {/if}
 </div>
 
-<style type="text/css">
+<style>
   h3:hover {
     text-decoration: underline;
     cursor: pointer;

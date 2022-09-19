@@ -203,7 +203,7 @@
   </div>
 </Dialog>
 
-<style type="text/css">
+<style>
   .content {
     display: grid;
     grid-gap: 24px;

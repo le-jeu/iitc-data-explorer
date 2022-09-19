@@ -19,7 +19,7 @@
   {/each}
 </div>
 
-<style type="text/css">
+<style>
   div.grid {
     display: grid;
     grid-template-columns: max-content auto;

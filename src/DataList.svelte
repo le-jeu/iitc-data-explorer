@@ -41,7 +41,7 @@
   {/each}
 </div>
 
-<style type="text/css">
+<style>
   .grid {
     display: grid;
     grid-template-columns: auto max-content;
