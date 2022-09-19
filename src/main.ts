@@ -14,7 +14,6 @@ class DataExplorer {
 const setup = () => {
   window.plugin[name] = new DataExplorer();
   window.plugin[name].init();
-  addCSSs();
 };
 
 export default setup;

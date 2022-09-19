@@ -25,7 +25,6 @@ Any 4-level S2 cells containing the link is highlighted.
 After scrolling the map at level 4,5 and 7, all tiles of level 4/5/7 that contain the link data are highlighted and match (almost, look closely) the frontier of the set of S2 cells.
 In other word, any tile that intersects the S2 cells contains the link data.
 
-
 ## Build
 
 Install the dependencies...
