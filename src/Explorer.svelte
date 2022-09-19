@@ -132,7 +132,12 @@
 </script>
 
 <Dialog
-  options={{ title: 'Data Explorer', resizable: true, width: 'auto' }}
+  options={{
+    title: 'Data Explorer',
+    resizable: true,
+    width: 'auto',
+    dialogClass: 'full-width-dialog',
+  }}
   on:close
 >
   <div class="content">

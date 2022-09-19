@@ -15,34 +15,25 @@
 
   let hlLayer = window.L.featureGroup().addTo(window.map);
 
-  let selectedEntities = [];
-  function selectEntities(entities: TileInfo['entities']) {
+  function updateLayers() {
     hlLayer.clearLayers();
-    selectedEntities = entities;
-    for (const e of selectedEntities) {
-      const [type, guid] = e;
-      switch (type) {
-        case 'p':
-          break;
-        case 'e':
-          const link = window.links[guid];
-          if (link)
-            window.L.geodesicPolyline(link.getLatLngs(), {
-              color: 'red',
-              interactive: false,
-            }).addTo(hlLayer);
-
-          break;
-        case 'r':
-          const field = window.fields[guid];
-          if (field)
-            window.L.geodesicPolygon(field.getLatLngs(), {
-              stroke: false,
-              fillColor: 'red',
-              interactive: false,
-            }).addTo(hlLayer);
-
-          break;
+    const field = window.fields[selectedGuid];
+    if (field) {
+      window.L.geodesicPolygon(field.getLatLngs(), {
+        color: 'red',
+        interactive: false,
+      }).addTo(hlLayer);
+      for (const s2 of approxS2FieldCovering(
+        selectedGuid,
+        minLevel,
+        maxLevel,
+        maxCells,
+        mergeCells
+      )) {
+        window.L.geodesicPolygon(s2.getCornerLatLngs(), {
+          color: 'purple',
+          interactive: false,
+        }).addTo(hlLayer);
       }
     }
     hlLayer.bringToFront();
@@ -54,19 +45,7 @@
       switch (e.detail.type) {
         case 'field':
           selectedGuid = e.detail.guid;
-          selectEntities([['r', selectedGuid]]);
-          for (const s2 of approxS2FieldCovering(
-            selectedGuid,
-            minLevel,
-            maxLevel,
-            maxCells,
-            mergeCells
-          )) {
-            window.L.geodesicPolygon(s2.getCornerLatLngs(), {
-              color: 'purple',
-              interactive: false,
-            }).addTo(hlLayer);
-          }
+          updateLayers();
           break;
         default:
           break;
@@ -78,13 +57,17 @@
   }
 
   onDestroy(() => {
-    selectEntities([]);
+    hlLayer.clearLayers();
     hlLayer.remove();
   });
 </script>
 
 <Dialog
-  options={{ title: 'Field Covering', resizable: true, width: 'auto' }}
+  options={{
+    title: 'Field Covering',
+    resizable: true,
+    width: 'auto',
+  }}
   on:close
 >
   <div class="content">
@@ -92,10 +75,34 @@
       <table>
         <tr><th>Min lvl</th><th>Max lvl</th><th>#Cells</th><th>Merge</th></tr>
         <tr>
-          <td><input bind:value={minLevel} type="number" /></td>
-          <td><input bind:value={maxLevel} type="number" /></td>
-          <td><input bind:value={maxCells} type="number" /></td>
-          <td><input bind:checked={mergeCells} type="checkbox" /></td>
+          <td>
+            <input
+              bind:value={minLevel}
+              type="number"
+              on:change={updateLayers}
+            />
+          </td>
+          <td>
+            <input
+              bind:value={maxLevel}
+              type="number"
+              on:change={updateLayers}
+            />
+          </td>
+          <td>
+            <input
+              bind:value={maxCells}
+              type="number"
+              on:change={updateLayers}
+            />
+          </td>
+          <td>
+            <input
+              bind:checked={mergeCells}
+              type="checkbox"
+              on:change={updateLayers}
+            />
+          </td>
         </tr>
       </table>
     </div>

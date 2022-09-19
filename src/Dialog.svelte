@@ -23,3 +23,9 @@
 <div bind:this={div}>
   <slot />
 </div>
+
+<style>
+  :global(.ui-dialog.full-width-dialog) {
+    max-width: calc(100vw - 2px);
+  }
+</style>
