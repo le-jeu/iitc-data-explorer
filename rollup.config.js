@@ -16,7 +16,7 @@ export default [
     output: {
       sourcemap: !production && 'inline',
       format: 'es',
-      file: 'dist/dataExplorer.js',
+      file: 'build/plugin.js',
     },
     plugins: [
       svelte({
@@ -46,7 +46,7 @@ export default [
   },
   // build the plugin from the default export
   {
-    input: 'dist/dataExplorer.js',
+    input: 'build/plugin.js',
     output: {
       file: 'dist/dataExplorer.user.js',
       globals: {
