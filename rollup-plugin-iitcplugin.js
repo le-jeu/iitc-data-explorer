@@ -1,31 +1,24 @@
-const framework = `
-// ensure plugin framework is there, even if iitc is not yet loaded
-if(typeof window.plugin !== 'function') window.plugin = function() {};
-`;
+import MagicString from 'magic-string';
 
 const wrapper = {
-  header: "function wrapper(info) {\n",
+  header: "function wrapper() {\n",
   footer:
-    "//add the script info data to the function as a property\n}\n",
+    "\n}\n",
 };
 
 const injection = `
-// inject code into site context
-var info = {};
-if (typeof GM_info !== 'undefined' && GM_info && GM_info.script) info.script = { version: GM_info.script.version, name: GM_info.script.name, description: GM_info.script.description };
-
 var script = document.createElement('script');
 // if on last IITC mobile, will be replaced by wrapper(info)
 var mobile = \`script.appendChild(document.createTextNode('('+ wrapper +')('+JSON.stringify(info)+');'));
 (document.body || document.head || document.documentElement).appendChild(script);\`;
 // detect if mobile
 if (mobile.startsWith('script')) {
-  script.appendChild(document.createTextNode('('+ wrapper +')('+JSON.stringify(info)+');'));
+  script.appendChild(document.createTextNode('('+ wrapper +')();'));
   script.appendChild(document.createTextNode('//# sourceURL=iitc:///plugins/@plugin_id@.js'));
   (document.body || document.head || document.documentElement).appendChild(script);
 } else {
   // mobile string
-  wrapper(info);
+  wrapper();
 }
 `;
 
@@ -79,51 +72,65 @@ export default function metablock(options = {}) {
 
   const header = lines.join("\n");
   const useMeta = options.updateMeta;
-  const useWrapper = !options.noWrapper;
-
-  let entryFound = false;
 
   return {
-    banner() {
-      return (
-        header +
-        "\n" +
-        (useWrapper ? wrapper.header : "") +
-        framework
-      );
-    },
-    footer() {
-      return (
-        (useWrapper
-          ? wrapper.footer + injection.replace("@plugin_id@", pluginId)
-          : '')
-      );
-    },
-    generateBundle() {
+    generateBundle(options, bundle) {
       if (useMeta)
         this.emitFile({
           type: "asset",
           fileName: pluginId + ".meta.js",
           source: header,
         });
-    },
-    resolveId (source, _, options ) {
-      if (options.isEntry && !entryFound) {
-        entryFound = source;
-        return "iitc-plugin-entry-point"
+      if (options.sourcemap) {
+        for (const id in bundle) {
+          const chunk = bundle[id];
+          chunk.code = chunk.code.replace("'//# sourceURL=iitc:///plugins/@plugin_id@.js'", `'//# sourceMappingURL=${chunk.map.toUrl()}'`);
+        }
+      } else {
+        for (const id in bundle) {
+          const chunk = bundle[id];
+          chunk.code = chunk.code.replace("'//# sourceURL=iitc:///plugins/@plugin_id@.js'", `'//# sourceURL=iitc:///plugins/${pluginId}.js'`);
+        }
       }
-      return null;
     },
-    load ( id ) {
-      if (id === 'iitc-plugin-entry-point') {
-        return `import setup from "./${entryFound}";
+    renderChunk(code, info, options) {
+      if (info.isEntry) {
+        const name = options.name;
+        const magicString = new MagicString(code);
+        magicString.append(`
 if(!window.bootPlugins) window.bootPlugins = [];
-window.bootPlugins.push(setup);
+window.bootPlugins.push(${name});
 // if IITC has already booted, immediately run the 'setup' function
-if(window.iitcLoaded && typeof setup === 'function') setup();
-setup.info = info;`; 
+if(window.iitcLoaded && typeof ${name} === 'function') ${name}();
+${name}.info = { 
+  script: { 
+    version: ${JSON.stringify(baseConf.version)}, 
+    name: ${JSON.stringify(baseConf.name)}, 
+    description: ${JSON.stringify(baseConf.description)} 
+  }
+};`);
+        // Wrapper
+        magicString.prepend(wrapper.header);
+        magicString.append(wrapper.footer);
+
+        let map;
+        if (options.sourcemap !== false) {
+          const injectionMagicString = magicString.clone();
+          injectionMagicString.prepend("(");
+          injectionMagicString.append(")();");
+          map = injectionMagicString.generateMap({ hires: true });
+        }
+        magicString.append(injection);
+
+        // Headers
+        magicString.prepend(header + "\n");
+
+        const result = { code: magicString.toString() }
+        if (options.sourcemap !== false) {
+          result.map = map;
+        }
+        return result
       }
-      return null;
     },
   };
 }

@@ -1,5 +1,4 @@
 import svelte from 'rollup-plugin-svelte';
-import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
@@ -14,9 +13,13 @@ export default [
   {
     input: 'src/main.ts',
     output: {
-      sourcemap: !production && 'inline',
-      format: 'es',
-      file: 'build/plugin.js',
+      sourcemap: !production && 'hidden',
+      format: 'iife',
+      file: 'dist/dataExplorer.user.js',
+      name: 'setup',
+      sourcemapPathTransform: (file) => {
+        return `iitc:///plugins/dataExplorer/${file.slice(3)}`
+      },
     },
     plugins: [
       svelte({
@@ -32,7 +35,6 @@ export default [
         browser: true,
         dedupe: ['svelte'],
       }),
-      commonjs(),
       
       typescript({
         sourceMap: !production,
@@ -42,23 +44,11 @@ export default [
       // If we're building for production (npm run build
       // instead of npm run dev), minify
       production && terser(),
-    ],
-  },
-  // build the plugin from the default export
-  {
-    input: 'build/plugin.js',
-    output: {
-      file: 'dist/dataExplorer.user.js',
-      globals: {
-        info: 'info',
-      }
-    },
-    plugins: [
+
       iitcplugin({
         id: 'dataExplorer',
         meta: metaJson,
         downloadRoot: 'https://github.com/le-jeu/iitc-data-explorer/raw/dist/',
-        noWrapper: false,
         buildName: 'lejeu',
       }),
     ],
