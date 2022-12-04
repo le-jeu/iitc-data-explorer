@@ -18,7 +18,7 @@ export default [
       file: 'dist/dataExplorer.user.js',
       name: 'setup',
       sourcemapPathTransform: (file) => {
-        return `iitc:///plugins/dataExplorer/${file.slice(3)}`
+        return `iitc:///plugins/dataExplorer/${file.slice(3)}`;
       },
     },
     plugins: [
@@ -35,7 +35,7 @@ export default [
         browser: true,
         dedupe: ['svelte'],
       }),
-      
+
       typescript({
         sourceMap: !production,
         inlineSources: !production,
