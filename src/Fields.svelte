@@ -35,7 +35,7 @@
   items={fieldList.map((guid) => [
     guid,
     $fields[guid].options.timestamp,
-    false,
+    { team: $fields[guid].options.data.team },
   ])}
   {activeID}
   on:select

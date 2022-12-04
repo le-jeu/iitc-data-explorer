@@ -8,7 +8,10 @@
   export let items: [
     PortalGUID | LinkGUID | FieldGUID | TileID,
     number,
-    string | false
+    {
+      name?: string;
+      team?: string;
+    }
   ][];
   export let activeID: string | false;
   export let selectedID: string = null;
@@ -23,12 +26,15 @@
   {#each items as item}
     <div
       class="guid"
-      class:raw={!item[2]}
+      class:raw={!item[2].name}
+      class:enl={item[2].team === 'E'}
+      class:res={item[2].team === 'R'}
+      class:mac={item[2].team === 'M'}
       class:selected={selectedID == item[0]}
       class:active={activeID == item[0]}
       on:click={() => onClick(item[0])}
     >
-      {item[2] || item[0]}
+      {item[2].name || item[0]}
     </div>
     <div
       class="date raw"

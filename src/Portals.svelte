@@ -38,7 +38,10 @@
   items={portalList.map((guid) => [
     guid,
     $portals[guid] ? $portals[guid].options.timestamp : 0,
-    $portals[guid] && $portals[guid].options.data.title,
+    {
+      name: $portals[guid] && $portals[guid].options.data.title,
+      team: $portals[guid].options.data.team,
+    },
   ])}
   selectedID={$selectedPortal}
   {activeID}

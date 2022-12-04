@@ -48,7 +48,7 @@
 
 <DataList
   type="tile"
-  items={tileList.map((guid) => [guid, $tiles[guid].time, false])}
+  items={tileList.map((guid) => [guid, $tiles[guid].time, {}])}
   {activeID}
   on:select
 />

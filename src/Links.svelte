@@ -32,7 +32,11 @@
 
 <DataList
   type="link"
-  items={linkList.map((guid) => [guid, $links[guid].options.timestamp, false])}
+  items={linkList.map((guid) => [
+    guid,
+    $links[guid].options.timestamp,
+    { team: $links[guid].options.data.team },
+  ])}
   {activeID}
   on:select
 />
