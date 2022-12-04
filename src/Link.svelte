@@ -31,7 +31,7 @@
     : {
         guid: link.options.guid,
         timestamp: timestampToString(link.options.timestamp),
-        team: link.options.team,
+        team: link.options.data.team,
         oGuid: link.options.data.oGuid,
         oLatE6: link.options.data.oLatE6,
         oLngE6: link.options.data.oLngE6,

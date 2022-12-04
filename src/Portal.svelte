@@ -26,10 +26,10 @@
     : {
         guid: portal.options.guid,
         timestamp: timestampToString(portal.options.timestamp),
-        team: portal.options.team,
+        team: portal.options.data.team,
         latE6: portal.options.data.latE6,
         lngE6: portal.options.data.lngE6,
-        level: portal.options.level,
+        level: portal.options.data.level,
         health: portal.options.data.health,
         resCount: portal.options.data.resCount,
         image: portal.options.data.image,

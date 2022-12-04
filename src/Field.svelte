@@ -26,7 +26,7 @@
     : {
         guid: field.options.guid,
         timestamp: timestampToString(field.options.timestamp),
-        team: field.options.team,
+        team: field.options.data.team,
         'points[0].guid': field.options.data.points[0].guid,
         'points[0].latE6': field.options.data.points[0].latE6,
         'points[0].lngE6': field.options.data.points[0].lngE6,
